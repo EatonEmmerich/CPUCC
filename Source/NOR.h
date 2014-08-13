@@ -14,6 +14,8 @@
 #include <sstream>
 #include <algorithm>
 #include <fstream>
+#include <locale>
+#include <functional>
 #include "DoubleVector.h"
 
 

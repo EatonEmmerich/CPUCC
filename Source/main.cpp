@@ -66,7 +66,7 @@ int parse_arguments(int argc, std::string argv[]) {
 		for (int x = 1; x < argc; x = x + 2) {
 			std::string in = argv[x];
 			std::transform(in.begin(), in.end(), in.begin(),
-					std::bind2nd(std::ptr_fun(&std::tolower<char>), std::locale("")));
+					bind2nd(ptr_fun(&tolower<char>), std::locale("")));
 			if (!is_valid_name(in)) {
 				print_parse_error(argv[x]);
 				print_readme();
@@ -140,7 +140,8 @@ void print_readme(){
 DoubleVector * getdata(ifstream &myfile,unsigned int axis1,unsigned int axis2){
 	string line;
 	DoubleVector * result= new DoubleVector(axis1,axis2);
-	int i,j = 0;
+	int i = 0;
+	int j = 0;
 	
 	while (getline(myfile,line)){
 		stringstream lineStream(line);
