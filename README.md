@@ -1,4 +1,4 @@
 CPUCC
 =====
 
-Cross Correlator for CPU
+Cross correlation using FX-correlators, 

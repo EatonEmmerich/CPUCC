@@ -1,0 +1,42 @@
+# The Basic Layout
+The Cross-Correlator being simulated in this code consists of mainly three parts; The Input Stage, The Transform Stage and The Output Stage.
+
+Now this may look like every other system you might have seen, but for definitions sake the stages will each be explained in terms of what they do and what they don't do.
+
+## The Input Stage
+The Input Stage can be further broken down into three phases for the sake of simplicity, as the input stage is quite complex relative to the other stages. The three stages are The Input Signal, Windowing and The Polyphase-filter.
+
+### The Input Signal
+The Cross-Correlator gets an input from multiple **signal sources** (generally from different antennas), these **signals** are sampled at a certain frequency to allow discrete time input into a digital system. The input signals possesses the following specifications:
+
+* The signal has a length defined by the number of samples that is within it.
+* The signal has a bit depth that defines the amount of different values each sample can hold.
+
+The story so far:
+**An input signal**
+https://www.dropbox.com/s/5votdnj01p8t0df/Input%20Signal.pdf
+
+### Windowing
+The Input Signal is usually a massive value as the data can be sampled for days on end with a sampling frequency of thousands (even millions) of samples per second. Since the number of data can be massive, it is neccesary to split the data into smaller '**windows**' thus the term *Windowing*. The window could be described as a square function of a specified size (lets call this N for now), or in the laymans terms the data gets cut out of the input signal such that it is a specific number of samples big. This cutting process is applied for a number of positions as the window 'shifts' across the input signal(s).
+
+To further increase the functionality of the cross-correlator the windows can create new 'input signals' each for the different placement of an overlapping window with another. This will increase the number of signals used as inputs and thus create a more accurate output.
+
+The story so far:
+**Windowed input signals**
+https://www.dropbox.com/s/m3ap5qucmar2ut6/Window%20Signal.pdf
+
+### Polyphase Filters
+Of course just slicing up the input signal creates some noise on the output signal. There are few things that you can do eisier AND better. Thus to iron out the wrinkles we make by slicing and dicing the signal, we use a polyphase filter. The basic concept is that a sinc function is created by the slicing and dicing in the frequency domain, to minimize this effect we use a filter (like a hamming or hanning etc.) with a sinc function in the time domain. The signal also gets transformed by a Hilbert transform, this will give the input signal a linear phase shift. _Citation needed_
+
+After the windowed signals are transformed by the filter the time signal is accumulated for each input signal by  with respect to the transformed windowed signals.
+
+The story so far:
+**filtered and accumulated windowed input signal**
+https://www.dropbox.com/s/3y4io33ygj4ddnj/Fintered%20and%20accumulated.pdf
+
+###The Transform Stage
+Very fast explanation: Do a DFT.
+Less fast explanation: Do the Discrete Fourier Transform on the signals from **The Input Stage**.
+Very long explanation: The input signal need to be correlated with the other signals, in the case of the FX-correlator (The one simulated by this software by the way.) the correlation is substituted with a fourier transform and then a complex multiplication. _Citation needed_
+
+The Transformed signal will 
