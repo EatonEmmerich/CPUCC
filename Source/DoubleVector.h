@@ -11,45 +11,47 @@
 #include <iostream>
 #include <sstream>
 
-template <typename T>
 class DoubleVector {
-    unsigned int axis1;
-    unsigned int axis2;
-	T * data;
+private:
+	unsigned int axis1;
+	unsigned int axis2;
+	short * data;
 public:
-    DoubleVector(unsigned int, unsigned int);
-    virtual ~DoubleVector();
-    std::string printData();
-	Entry()
+	DoubleVector(unsigned int, unsigned int);
+	virtual ~DoubleVector();
+	std::string printData();
+	void Entry(short, unsigned int, unsigned int);
 };
 
-template <typename T>
-DoubleVector::DoubleVector(unsigned int axis1, unsigned int axis2){
+
+DoubleVector::DoubleVector(unsigned int axis1, unsigned int axis2) {
 	this->axis1 = axis1;
 	this->axis2 = axis2;
-	data = new T [axis1*axis2];
+	data = new short [axis1 * axis2];
 }
 
 //DoubleVector::DoubleVector(const DoubleVector& orig) {
 //}
 
-template <typename T>
 DoubleVector::~DoubleVector() {
 	// TODO- deconstruct the data
 }
 
-template <typename T>
-std::string DoubleVector::printData(){
+std::string DoubleVector::printData() {
 	std::string out = "";
-	for (unsigned int x = 0; x < axis1; x++){
-		for (unsigned int y = 0; y < axis2; y++){
+	for (unsigned int x = 0; x < axis1; x++) {
+		for (unsigned int y = 0; y < axis2; y++) {
 			std::ostringstream convert;
-			convert << data[x*axis2+y];
-			out = out + convert.str();
+			convert << data[x * axis2 + y];
+			out = out + convert.str() + " ";
 		}
 		out = out + "\n";
 	}
 	return out;
+}
+
+void DoubleVector::Entry(short input, unsigned int axis1, unsigned int axis2){
+	data[axis1*this->axis2+axis2] = input;	
 }
 
 #endif	/* DOUBLEVECTOR_H */
