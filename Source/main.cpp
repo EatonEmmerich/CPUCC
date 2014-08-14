@@ -36,7 +36,9 @@ int main(int argc, const char * argv[]) {
 	if (step == 1) {
 		string filename = argv[1];
 		DoubleVector * Data = Read_data(filename);
-		string output = Data->printData();
+		DoubleVector * Data2 = new DoubleVector(2,2);
+		string output = Data2->printData();
+		cout << output;
 	}
 
 	return 0;
@@ -110,7 +112,7 @@ void print_readme(){
 	std::ifstream myfile;
 	string line;
 	try {
-		myfile.open("ReadMe.txt", ios::in);
+		myfile.open("Resources\\ReadMe.txt", ios::in);
 		if (myfile.is_open()) {
 			while (getline(myfile, line)) {
 				cout << line << '\n';
@@ -134,7 +136,7 @@ DoubleVector * getdata(ifstream &myfile,unsigned int axis1,unsigned int axis2){
 		stringstream lineStream(line);
 		string ex2;
 		while (getline(lineStream,ex2,',')){
-			result->data[i][j] = StringToNumber<short>(ex2);
+			result::Entry(StringToNumber<short>(ex2),i,j);
 			j++;
 		}
 		j = 0;
@@ -144,17 +146,15 @@ DoubleVector * getdata(ifstream &myfile,unsigned int axis1,unsigned int axis2){
 }
 
 
-bool checkaxis2(ifstream &file, unsigned int * axis2){
+bool checkaxis2(stringstream &lineStream, unsigned int * axis2){
 	string line;
 	vector<string> result;
-	getline(file,line);
-	stringstream lineStream(line);
 	string cell;
 	while(getline(lineStream,cell,','))
 	{
 		result.push_back(cell);
 	}
-	if (*axis2 != result.size()){
+	if ((*axis2) != result.size()){
 		return false;
 	}
 	return true;
@@ -172,18 +172,18 @@ void checkformat(ifstream &file,unsigned int * axis1,unsigned int * axis2){
 	string cell;
 	while(getline(lineStream,cell,','))
 	{
-		//result.push_back(cell);
+		result.push_back(cell);
 	}
 	*axis2 = result.size();
-	*axis1 ++;
+	(*axis1) ++;
 	while(getline(file,line)){
 		stringstream lineStream(line);
-		if(checkaxis2(file,axis2)){
+		if (checkaxis2(lineStream, axis2)){
 			(*axis1) ++;
 		}
 		else{
 			//not same sizes.
-			cout << "Error at line number:" << ((*axis1)+1);
+			cout << "Error at line number:" << ((*axis1)+1) << "\n";
 			throw NotSameLengthException();
 		}
 	}
