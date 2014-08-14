@@ -18,6 +18,13 @@
 #include <functional>
 #include "DoubleVector.h"
 
+class NotSameLengthException : public std::exception
+{
+	virtual const char* what() const throw()
+	{
+		return "The file vectors are not all the same length.";
+	}
+};
 
 #endif	/* NOR_H */
 

@@ -1,4 +1,4 @@
-#include "NOR.h"
+#include "main.h"
 using namespace std;
 
 #define OPTIONSIZE 8
@@ -9,15 +9,6 @@ using namespace std;
 
 const char * options[OPTIONSIZE] = {"/bitdepth", "/bd", "/windowsize", "/ws", "/numsig", "/ns", "/numthreads", "/nt"};
 
-
-
-class NotSameLengthException: public std::exception
-{
-  virtual const char* what() const throw()
-  {
-    return "The file vectors are not all the same length.";
-  }
-};
 
 // Function prototypes:
 int parse_arguments(int argc, std::string argv[]);
@@ -33,10 +24,6 @@ int numthreads = DEFAULT_THREADS;
 int numbits = DEFAULT_BITS;
 int numwindowssize = DEFAULT_WINDOW_SIZE;
 int numsignals = DEFAULT_SIGS;
-
-
-
-
 
 
 int main(int argc, const char * argv[]) {
@@ -123,15 +110,15 @@ void print_readme(){
 	std::ifstream myfile;
 	string line;
 	try {
-		myfile.open("readme.txt", ios::in);
+		myfile.open("ReadMe.txt", ios::in);
 		if (myfile.is_open()) {
 			while (getline(myfile, line)) {
 				cout << line << '\n';
 			}
 		} else {
-			throw std::exception();
+			throw FileNotFoundException();
 		}
-	}	catch (std::exception e) {
+	}	catch (exception& e) {
 		cout << e.what() << "\nPlease contact the author.";
 	}
 }
@@ -217,9 +204,9 @@ DoubleVector * Read_data(const string filename) {
 			myfile.seekg(0,myfile.beg);
 			output = getdata(myfile,axis1, axis2);
 		} else {
-			throw std::exception();
+			throw FileNotFoundException();
 		}
-	}	catch (std::exception e) {
+	}	catch (exception& e) {
 		cout << e.what() << "\nPlease contact the author.";
 	}
 	return output;

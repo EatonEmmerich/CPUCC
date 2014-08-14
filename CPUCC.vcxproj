@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DoubleVector.h" />
+    <ClInclude Include="Source\main.h" />
     <ClInclude Include="Source\NOR.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
