@@ -3,7 +3,7 @@ using namespace std;
 
 #define OPTIONSIZE 8
 #define DEFAULT_THREADS 2
-#define DEFAULT_BITS 16
+#define DEFAULT_BITS 16  //This is mere for display, will later on check to see how we can overcome this obstacle..
 #define DEFAULT_WINDOW_SIZE 16
 #define DEFAULT_SIGS 20
 
@@ -15,6 +15,8 @@ int parse_arguments(int argc, std::string argv[]);
 void print_parse_error(std::string err);
 void print_readme();
 bool is_valid_name(std::string in);
+void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2);
+DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
 template <typename T>
 T StringToNumber(const string &in);
 DoubleVector * Read_data(string filename);
@@ -26,12 +28,10 @@ int numwindowssize = DEFAULT_WINDOW_SIZE;
 int numsignals = DEFAULT_SIGS;
 
 int main(int argc, const char * argv[]) {
-    std::string * argv2 = new std::string[argc];
-    for (int x = 0; x < argc; x++) {
-        argv2[x] = argv[x];
-    }
 
-    int step = parse_arguments(argc, argv2);
+    //check input paramaters set into program.
+    int step = parse_arguments(argc, argv);
+    //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
         DoubleVector * Data = Read_data(filename);
