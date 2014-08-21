@@ -30,7 +30,11 @@ int numsignals = DEFAULT_SIGS;
 int main(int argc, const char * argv[]) {
 
     //check input paramaters set into program.
-    int step = parse_arguments(argc, argv);
+    string *a = new string [argc];
+    for (int x = 0; x < argc; x++){
+        a[x] = argv[x];
+    }
+    int step = parse_arguments(argc, a);
     //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
@@ -132,7 +136,7 @@ DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2)
         stringstream lineStream(line);
         string ex2;
         while (getline(lineStream, ex2, ',')) {
-            result->Entry(StringToNumber<short>(ex2), i, j);
+            result->setEntry(StringToNumber<short>(ex2), i, j);
             j++;
         }
         j = 0;
