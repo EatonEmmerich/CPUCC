@@ -11,9 +11,12 @@
 
 class SingleVector {
 private:
-	complex * data;
+	complex ** data;
+	unsigned int length;
 public:
-	DoubleVector(unsigned int, unsigned int);
+	SingleVector(unsigned int);
+	virtual ~SingleVector();
+	std::string printData();
 };
 
 #endif	/* SINGLEVECTOR_H */

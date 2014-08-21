@@ -16,8 +16,9 @@
 #include <fstream>
 #include <locale>
 #include <functional>
-#include "DoubleVector.h"
 #include "complex.h"
+#include "DoubleVector.h"
+#include "SingleVector.h"
 
 class NotSameLengthException : public std::exception
 {
