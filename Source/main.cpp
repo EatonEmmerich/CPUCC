@@ -136,7 +136,8 @@ DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2)
         stringstream lineStream(line);
         string ex2;
         while (getline(lineStream, ex2, ',')) {
-            result->setEntry(StringToNumber<short>(ex2), i, j);
+            complex * temp = new complex(StringToNumber<double>(ex2));
+            result->setEntry(temp, i, j);
             j++;
         }
         j = 0;

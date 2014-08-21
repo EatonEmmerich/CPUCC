@@ -7,22 +7,20 @@
 
 #ifndef DOUBLEVECTOR_H
 #define	DOUBLEVECTOR_H
-#include <string>
-#include <iostream>
-#include <sstream>
 #include "NOR.h"
 
 class DoubleVector {
 private:
 	unsigned int axis1;
 	unsigned int axis2;
-	complex * data;
+	complex ** data;
 public:
 	DoubleVector(unsigned int, unsigned int);
 	virtual ~DoubleVector();
 	std::string printData();
-	void setEntry(short, unsigned int, unsigned int);
-	complex * getSingleVector(unsigned int index1);
+	void setEntry(complex *, unsigned int, unsigned int);
+	complex ** getSingleVector(unsigned int);
+	complex * getEntry(unsigned int,unsigned int);
 };
 
 

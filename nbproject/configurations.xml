@@ -6,6 +6,9 @@
                    projectFiles="true">
       <itemPath>Source/DoubleVector.h</itemPath>
       <itemPath>Source/NOR.h</itemPath>
+      <itemPath>Source/SingleVector.h</itemPath>
+      <itemPath>Source/complex.h</itemPath>
+      <itemPath>Source/fft.h</itemPath>
       <itemPath>Source/main.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -17,6 +20,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>Source/DoubleVector.cpp</itemPath>
+      <itemPath>Source/SingleVector.cpp</itemPath>
+      <itemPath>Source/complex.cpp</itemPath>
+      <itemPath>Source/fft.cpp</itemPath>
       <itemPath>Source/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -48,6 +54,18 @@
       <item path="Source/DoubleVector.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/NOR.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/SingleVector.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/SingleVector.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/complex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/complex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/fft.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/fft.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -81,6 +99,18 @@
       <item path="Source/DoubleVector.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/NOR.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/SingleVector.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/SingleVector.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/complex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/complex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Source/fft.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Source/fft.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/main.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -36,6 +36,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Source/DoubleVector.o \
+	${OBJECTDIR}/Source/SingleVector.o \
+	${OBJECTDIR}/Source/complex.o \
+	${OBJECTDIR}/Source/fft.o \
 	${OBJECTDIR}/Source/main.o
 
 
@@ -67,6 +70,21 @@ ${OBJECTDIR}/Source/DoubleVector.o: Source/DoubleVector.cpp
 	${MKDIR} -p ${OBJECTDIR}/Source
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/DoubleVector.o Source/DoubleVector.cpp
+
+${OBJECTDIR}/Source/SingleVector.o: Source/SingleVector.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Source
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/SingleVector.o Source/SingleVector.cpp
+
+${OBJECTDIR}/Source/complex.o: Source/complex.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Source
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/complex.o Source/complex.cpp
+
+${OBJECTDIR}/Source/fft.o: Source/fft.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Source
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/fft.o Source/fft.cpp
 
 ${OBJECTDIR}/Source/main.o: Source/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
