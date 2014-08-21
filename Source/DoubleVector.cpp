@@ -6,13 +6,12 @@
  */
 
 #include "DoubleVector.h"
-#include "NOR.h"
 
 
 DoubleVector::DoubleVector(unsigned int axis1, unsigned int axis2) {
 	this->axis1 = axis1;
 	this->axis2 = axis2;
-	data = new short [axis1 * axis2];
+	data = new complex [axis1 * axis2];
 }
 
 //DoubleVector::DoubleVector(const DoubleVector& orig) {
@@ -27,7 +26,7 @@ std::string DoubleVector::printData() {
 	for (unsigned int x = 0; x < axis1; x++) {
 		for (unsigned int y = 0; y < axis2; y++) {
 			std::ostringstream convert;
-			convert << data[x * axis2 + y];
+			convert << data[x * axis2 + y].im() << "i + " << data[x * axis2 + y].re() << "j";
 			out = out + convert.str() + " ";
 		}
 		out = out + "\n";
@@ -40,8 +39,12 @@ void DoubleVector::setEntry(short input, unsigned int axis1, unsigned int axis2)
 }
 
 //returns vector along axis 2 for specified axis 1 value.
-short * DoubleVector::getSingleVector(unsigned int index1){
-        
+complex * DoubleVector::getSingleVector(unsigned int index1){
+    complex * out = new complex[axis2];
+    
+    for(int x = 0; x < axis2; x++){
+        out[x] = data[index1*x];
+    }
 }
 
 

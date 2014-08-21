@@ -17,6 +17,7 @@
 #include <locale>
 #include <functional>
 #include "DoubleVector.h"
+#include "complex.h"
 
 class NotSameLengthException : public std::exception
 {
