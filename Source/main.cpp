@@ -42,6 +42,14 @@ int main(int argc, const char * argv[]) {
         string output = Data->printData();
         cout << output;
     }
+    SingleVector b = SingleVector(5);
+    SingleVector c = SingleVector(5);
+    b.setEntry(1,1,0);
+    b.setEntry(2,2,1);
+    c.setEntry(1,1,0);
+    c.setEntry(2,2,1);
+    SingleVector e = b*c;
+    cout << e.printData();
 
     return 0;
 }
@@ -125,6 +133,7 @@ void print_readme() {
     } catch (exception& e) {
         cout << e.what() << "\nPlease contact the author.\n";
     }
+    myfile.close();
 }
 
 DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {

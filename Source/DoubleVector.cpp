@@ -27,7 +27,7 @@ std::string DoubleVector::printData() {
 	for (unsigned int x = 0; x < axis1; x++) {
 		for (unsigned int y = 0; y < axis2; y++) {
 			std::ostringstream convert;
-			convert << data[x * axis2 + y]->im() << "i + " << data[x * axis2 + y]->re() << "j";
+			convert << data[x * axis2 + y]->re() << " + " << data[x * axis2 + y]->im() << "j";
 			out = out + convert.str() + " ";
 		}
 		out = out + "\n";
