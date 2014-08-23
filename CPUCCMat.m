@@ -1,9 +1,9 @@
 samplingFreq = 50*10^6; % sampling frequency
-f = 2; % number of overlapping signals
-Window_Size = 65536; % size of window to cross multiply
+f = 4; % number of overlapping signals
+Window_Size = 65536*8; % size of window to cross multiply
 Num_Of_Antennas = 2;
-signal_frequency = 32400; % radians/sec
-signal_time = 1; % in seconds
+signal_frequency = 324000; % radians/sec
+signal_time = 2; % in seconds
 N = signal_time/(1/samplingFreq) % total samples in input signal
 Nfft = Window_Size/2 % total samples in FFT output
 Num_Of_Windows_Per_Signal = ceil(N/Window_Size);
@@ -15,9 +15,10 @@ t = linspace(0,signal_time,N);
 % Signal_no_noise = [(sin(signal_frequency*t(N/3:N*2/3-1)) + 20*sin((signal_frequency-1000)*t(N/3:N*2/3-1)))];
 % input_hanning = [ 1/2-(1/2)*cos(2*pi*(1:N/3)/(N/3))];
 % Signal_no_noise = Signal_no_noise.*input_hanning;
-figure(1);
-plot(t);
-Signal_no_noise = (sin(signal_frequency*t) + 20*sin((signal_frequency-1000)*t));
+%figure(2);
+%plot(t);
+Signal_no_noise = (20*sin(signal_frequency*t) + 20*sin((signal_frequency+1000000)*t));
+%plot(20*log(abs(fft(Signal_no_noise))));
 windowcoef = (N/2)/f; % commonly used constant
 fs = linspace(0,1,Nfft);
 %Signals = zeros(Num_Of_Antennas,N);
@@ -56,7 +57,7 @@ for x = 1:Num_Of_Antennas
             TEMP = TEMP + Signalf(i,:);
             i = i +1;
         end
-        TEMP = fft(TEMP);
+        TEMP = fft(TEMP/(i-1));
         Signalfft(x,:) = TEMP(1:Nfft);
     end
 end
@@ -78,8 +79,8 @@ end
 Signalout = Signalout/Number_Of_Complex_Multiplications;
 
 
-figure(1);
-plot(t,Signal_no_noise);
+%figure(1);
+%plot(t,Signal_no_noise);
 % figure(2);
 % plot(t(1:Window_Size),(pre_filter));
 % figure(3);
@@ -90,4 +91,4 @@ plot(t,Signal_no_noise);
 %figure (20);
 %plot(t,20*log(abs(Signalout)));
 figure (21);
-stem(t,(angle(Signalout)));
+stem(fs,(20*log(abs((Signalout)))));
