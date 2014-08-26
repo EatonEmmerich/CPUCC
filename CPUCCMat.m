@@ -1,6 +1,6 @@
-samplingFreq = 50*10^6; % sampling frequency
-f = 4; % number of overlapping signals
-Window_Size = 65536*8; % size of window to cross multiply
+samplingFreq = 2*10^4; % sampling frequency
+f = 7; % number of overlapping signals
+Window_Size = 65536*8*16/1024; % size of window to cross multiply
 Num_Of_Antennas = 2;
 signal_frequency = 324000; % radians/sec
 signal_time = 2; % in seconds
@@ -43,7 +43,7 @@ for x = 1:Num_Of_Antennas
     
     for y = 1:f
         start = 1;
-        window_c = ((1/f)*y)*Window_Size;
+        window_c = ceil(((1/f)*y)*Window_Size) % end of the window currently being shifted
         i = 1;
         TEMP = zeros(1,Window_Size);
         while window_c < N
