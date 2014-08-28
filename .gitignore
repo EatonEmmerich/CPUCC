@@ -220,3 +220,6 @@ FakesAssemblies/
 *.exe
 *.out
 *.app
+
+# octave images
+*.svg
