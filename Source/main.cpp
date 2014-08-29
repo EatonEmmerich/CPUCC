@@ -16,10 +16,10 @@ void print_parse_error(std::string err);
 void print_readme();
 bool is_valid_name(std::string in);
 void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2);
-DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
+SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
 template <typename T>
 T StringToNumber(const string &in);
-DoubleVector * Read_data(string filename);
+SingleVector * Read_data(string filename);
 
 // program variables:
 int numthreads = DEFAULT_THREADS;
@@ -38,19 +38,12 @@ int main(int argc, const char * argv[]) {
     //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
-        DoubleVector * Data = Read_data(filename);
+        SingleVector * Data = Read_data(filename);
         string output = Data->printData();
         cout << output;
     }
-    SingleVector b = SingleVector(5);
-    SingleVector c = SingleVector(5);
-    b.setEntry(1,1,0);
-    b.setEntry(2,2,1);
-    c.setEntry(1,1,0);
-    c.setEntry(2,2,1);
-    SingleVector e = b*c;
-    cout << e.printData();
-
+    
+    
     return 0;
 }
 
@@ -136,17 +129,17 @@ void print_readme() {
     myfile.close();
 }
 
-DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
+SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
     string line;
-    DoubleVector * result = new DoubleVector(axis1, axis2);
+    SingleVector * result = new SingleVector [axis2];
     int i = 0;
     int j = 0;
     while (getline(myfile, line)) {
         stringstream lineStream(line);
         string ex2;
         while (getline(lineStream, ex2, ',')) {
-            complex * temp = new complex(StringToNumber<double>(ex2));
-            result->setEntry(temp, i, j);
+            complex temp = complex(StringToNumber<double>(ex2));
+            result[i].setEntry(temp, j);
             j++;
         }
         j = 0;
@@ -194,8 +187,8 @@ void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2) {
 
 }
 
-DoubleVector * Read_data(const string filename) {
-    DoubleVector * output;
+SingleVector * Read_data(const string filename) {
+    SingleVector * output;
     unsigned int axis1 = 0;
     unsigned int axis2 = 0;
     std::ifstream myfile;

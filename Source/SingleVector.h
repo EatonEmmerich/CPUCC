@@ -79,7 +79,7 @@ public:
 		return out;
 	}
 	
-	SingleVector& operator*=(const double val) const
+	SingleVector& operator*=(const double val)
 	{
 		
 		for(int x = 0; x < length; x++){
