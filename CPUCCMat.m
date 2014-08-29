@@ -2,7 +2,7 @@ samplingFreq = 100*10^9; % sampling frequency
 f = 4; % number of overlapping signals
 Window_Size = 2048; % size of window to cross multiply
 Num_Of_Antennas = 4;
-signal_frequency = 2*10^9; % radians/sec
+signal_frequency = 40*10^9; % radians/sec
 signal_time = 0.00000004; % in seconds
 N = signal_time/(1/samplingFreq) % total samples in input signal
 Nfft = Window_Size/2 % total samples in FFT output
@@ -20,7 +20,9 @@ fs_input = linspace(0,1,Window_Size);
 %plot(t);
 H = 3; % sizes of pictures.
 W = 4;
-Signal_no_noise = (20*cos(signal_frequency*t) + sin((signal_frequency+15*10^9)*t));
+Signal_no_noise = (20*cos(signal_frequency*t) + sin((signal_frequency+15*10^9)*t)); %frequency noise
+Signal_no_noise_s = (2*rand(1,N))-1 + ((2*rand(1,N)-1)*i);
+Signal_no_noise = Signal_no_noise + Signal_no_noise_s;
 figure(1);
 plot(t(1:N),Signal_no_noise(1:N));
 title('Input signal time domain','fontsize',14);
@@ -76,20 +78,20 @@ for x = 1:Num_Of_Antennas
     for y = 1:f
         start = 1;
         window_c = ceil(((1/f)*y)*Window_Size); % end of the window currently being shifted
-        i = 1;
+        z = 1;
         TEMP = zeros(1,Window_Size);
         while window_c < N
-            Signalf(i,:) = [zeros(1,Window_Size-(window_c-start)) (Signalt(start:(window_c-1)))];
+            Signalf(z,:) = [zeros(1,Window_Size-(window_c-start)) (Signalt(start:(window_c-1)))];
             % add prefilter
-            Signalf(i,:) = hilbert(Signalf(i,:).*pre_filter);
+            Signalf(z,:) = hilbert(Signalf(z,:).*pre_filter);
             %TEMP = fft(Signalf);
             %Signalfft((x),i,:) = TEMP(1:Nfft);
             start = window_c;
             window_c = window_c + Window_Size;
-            TEMP = TEMP + Signalf(i,:);
-            i = i +1;
+            TEMP = TEMP + Signalf(z,:);
+            z = z +1;
         end
-        TEMP = fft(TEMP/(i-1));
+        TEMP = fft(TEMP/(z-1));
         Signalfft((x-1)*f+y,:) = TEMP(1:Nfft);
     end
 end
