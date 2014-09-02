@@ -1,6 +1,6 @@
 samplingFreq = 100*10^9; % sampling frequency
 %f = 1; % number of overlapping signals
-Window_Size = 2^13; % size of window to cross multiply
+Window_Size = 2^9; % size of window to cross multiply
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^9; % radians/sec
 signal_time = 0.00000010; % in seconds
@@ -9,8 +9,10 @@ Nfft = Window_Size%/2 % total samples in FFT output
 Num_Of_Windows_Per_Signal = ceil(N/Window_Size);
 Number_Of_Signals = Num_Of_Antennas
 Number_Of_Complex_Multiplications = 1/2*(Number_Of_Signals-1)*Number_Of_Signals
-signal_to_noise_input = 1; % multiplied to noise then added to signal
+signal_to_noise_input = 0.5; % multiplied to noise then added to signal
+Nyquist_freq = samplingFreq/2;
 t = linspace(0,signal_time,N);
+f = linspace(0,Nyquist_freq,5);
 fs = linspace(0,1,Nfft/2);
 fs_input = linspace(0,1,Nfft/2);
 % Signal_no_noise = [(sin(signal_frequency*t(N/3:N*2/3-1)) + 20*sin((signal_frequency-1000)*t(N/3:N*2/3-1)))];
@@ -20,10 +22,7 @@ fs_input = linspace(0,1,Nfft/2);
 %plot(t);
 H = 3; % sizes of pictures.
 W = 4;
-Signal_no_noise = (cos(signal_frequency*t) + sin((signal_frequency+15*10^9)*t)); %frequency noise
-Signal_no_noise_s = zeros(1,N);
-Signal_no_noise_s = Signal_no_noise_s + 20*e.^(2*pi*(10*10^9.*t*i));
-Signal_no_noise = Signal_no_noise + (Signal_no_noise_s);
+Signal_no_noise = 20*(cos(signal_frequency*t) + sin((signal_frequency+15*10^9)*t)); %frequency noise
 figure(1);
 subplot(1,2,1);
 plot(t(1:Nfft),abs(Signal_no_noise(1:Nfft)));
@@ -53,6 +52,7 @@ Signalf = zeros(Num_Of_Windows_Per_Signal,Window_Size);
 Signalfft = zeros(Number_Of_Signals,Nfft);
 Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft);
 Signalout = zeros(1,Nfft);
+Signalin = zeros(Number_Of_Signals,N);
 analysis_filter = sinc(((1:Window_Size)-Window_Size/2)/Window_Size);
 HanningWindow = 1/2-(1/2)*cos(2*pi*(1:Window_Size)/Window_Size);
 pre_filter = analysis_filter.*HanningWindow;
@@ -67,31 +67,41 @@ print(22,'polyphasepre.svg','-dsvg');
 % iterate every other signal
 
 % Set up realtime signals
+noise1 = 2*rand(1,5)-1
+noise2 = 2*rand(1,5)-1;
 for x = 1:Num_Of_Antennas
-    noise = 2*rand(1,N)-1;
     % EDIT: added delay on signals as antenna increases
 %     TEMP = [zeros(1,10*x) Signal_no_noise zeros(1,N*2/3+1-(10*x))];
-    Signalt = noise+(Signal_no_noise/signal_to_noise_input);
+    Signal_no_noise_s = zeros(1,N);
+    for(z = 1:5)
+        Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
+    end
+    Signalt = ((Signal_no_noise)+(Signal_no_noise_s)/signal_to_noise_input);
     figure(x+2);
-    plot(t(1:N),Signalt(1:N));
+    subplot(1,2,1);
+    plot(t(1:N),abs(Signalt(1:N)));
     xlabel('time(s)','fontsize',14);
     title('Antenna output signal','fontsize',14);
     set((x+2),'paperunits','inches');
     set((x+2),'paperorientation','portrait');
     set((x+2),'papersize',[H,W]);
+    subplot(1,2,2);
+    plot(t(1:N),angle(Signalt(1:N)))
     name = ['a' num2str(x) 'outf.svg'];
     print(x+2,name,'-dsvg');
-    % create overlap sequences:
+    Signalin(x,:) = Signalt;
+    phases2 = noise2;
+    %EDIT: removed: create overlap sequences:
        
     start = 1;
     window_c = (Window_Size); % end of the window currently being shifted
     z = 1;
     TEMP = zeros(1,Window_Size);
+	%DO POLYPHASE
     while window_c < N
         Signalf(z,:) = (Signalt(start:(window_c)));
 	Signalf(z,:) = Signalt(1:Nfft);
         % add prefilter
-%       Signalf(z,:) = hilbert(Signalf(z,:).*pre_filter);
 	Signalf(z,:) = Signalf(z,:).*pre_filter;
         start = window_c+1;
         window_c = window_c + Window_Size;
@@ -160,9 +170,18 @@ stem(fs,angle(Signalout(1:Nfft/2)));
 print(21,'outf.svg','-dsvg');
 
 figure (22);
-plot(fs,angle(Signalout(1:Nfft/2)));
+plot(angle(Signalout(1:Nfft/2)));
 figure (23);
-plot(fs,angle(fft(fft_in)(1:Nfft/2)));
-
-angle(Signalout(floor(0.2*(Nfft/2))))
-angle(fft(fft_in)(floor(0.2*(Nfft/2))))
+size14 = abs(Signalout(10))
+angle14 = angle(Signalout(10))
+ttta = angle(fft(Signalin(1,:).*conj(fft(Signalin(2,:)))));
+ttfa = angle(fft(Signalin(1,1:Nfft)).*conj(fft(Signalin(2,1:Nfft))));
+angle14 = ttfa(10)
+size15 = abs(Signalout(100))
+angle15 = angle(Signalout(100))
+angle15 = ttfa(100)
+plot(ttfa(1:Nfft/2));
+figure(24);
+plot(phases2*pi);
+figure(25);
+plot(angle(ifft(Signalout)));
