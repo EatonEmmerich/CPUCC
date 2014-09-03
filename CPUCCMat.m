@@ -1,9 +1,9 @@
 samplingFreq = 100*10^9; % sampling frequency
-%f = 1; % number of overlapping signals
-Window_Size = 2^9; % size of window to cross multiply
+Window_Size = 2^11; % size of window to cross multiply
+number_of_bodies = 5;
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^9; % radians/sec
-signal_time = 0.00000010; % in seconds
+signal_time = 0.00000020; % in seconds
 N = signal_time/(1/samplingFreq) % total samples in input signal
 Nfft = Window_Size%/2 % total samples in FFT output
 Num_Of_Windows_Per_Signal = ceil(N/Window_Size);
@@ -45,6 +45,8 @@ set(2,'paperorientation','portrait');
 set(2,'papersize',[H,W]);
 subplot(1,2,2);
 stem(fs_input,angle(fft(fft_in))(1:Nfft/2));
+xlabel('f_s');
+ylabel('angle');
 print(2,'input freq.svg','-dsvg');
 %windowcoef = (Nfft)/f; % commonly used constant
 
@@ -67,13 +69,15 @@ print(22,'polyphasepre.svg','-dsvg');
 % iterate every other signal
 
 % Set up realtime signals
-noise1 = 2*rand(1,5)-1
-noise2 = 2*rand(1,5)-1;
+noise1 = 2*rand(1,number_of_bodies)-1
+noise2 = 2*rand(1,number_of_bodies)-1;
+zerr = zeros(1,Nfft);
+x2 = 1;
 for x = 1:Num_Of_Antennas
     % EDIT: added delay on signals as antenna increases
 %     TEMP = [zeros(1,10*x) Signal_no_noise zeros(1,N*2/3+1-(10*x))];
     Signal_no_noise_s = zeros(1,N);
-    for(z = 1:5)
+    for(z = 1:number_of_bodies)
         Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
     end
     Signalt = ((Signal_no_noise)+(Signal_no_noise_s)/signal_to_noise_input);
@@ -86,30 +90,34 @@ for x = 1:Num_Of_Antennas
     set((x+2),'paperorientation','portrait');
     set((x+2),'papersize',[H,W]);
     subplot(1,2,2);
-    plot(t(1:N),angle(Signalt(1:N)))
+    plot(t(1:N),angle(Signalt(1:N)));
+    xlabel('time(s)');
+    ylabel('angle');
     name = ['a' num2str(x) 'outf.svg'];
     print(x+2,name,'-dsvg');
     Signalin(x,:) = Signalt;
     phases2 = noise2;
-    %EDIT: removed: create overlap sequences:
-       
+    b = 2
+    %create overlap sequences:
     start = 1;
-    window_c = (Window_Size); % end of the window currently being shifted
+    window_c = Window_Size; % end of the window currently being shifted
     z = 1;
     TEMP = zeros(1,Window_Size);
-	%DO POLYPHASE
+    %DO POLYPHASE
     while window_c < N
         Signalf(z,:) = (Signalt(start:(window_c)));
-	Signalf(z,:) = Signalt(1:Nfft);
+%       Signalf(z,:) = Signalt(1:Nfft);
         % add prefilter
-	Signalf(z,:) = Signalf(z,:).*pre_filter;
+        Signalf(z,:) = hilbert(Signalf(z,:).*pre_filter);
         start = window_c+1;
         window_c = window_c + Window_Size;
         TEMP = TEMP + Signalf(z,:);
-        z = z +1;
+        z = z + 1;
     end
     TEMP = fft(TEMP/(z-1));
-    Signalfft(x,:) = TEMP(1:Nfft);
+    Signalfft(x2,:) = TEMP(1:Nfft);
+    x2 = x2 + 1;
+    
 end
 
 % plot the outputs:
@@ -126,6 +134,8 @@ for x = 1:Num_Of_Antennas
 	name = ['pffb-' num2str(x) '.svg'];
 	subplot(1,2,2);
 	stem(fs,angle(Signalfft(x,1:Nfft/2)));
+        xlabel('f_s');
+	ylabel('angle');
 	print((x+2+Num_Of_Antennas),name,'-dsvg');
 	%figure(96+x);
 	%plot(fs,angle(Signalfft(1,1:Nfft/2).*conj(Signalfft(2,1:Nfft/2))));
@@ -167,10 +177,25 @@ set(21,'paperorientation','portrait')
 set(21,'papersize',[H,W]);
 subplot(1,2,2);
 stem(fs,angle(Signalout(1:Nfft/2)));
+xlabel('f_s');
+ylabel('angle');
 print(21,'outf.svg','-dsvg');
 
+marker = zeros(1,Nfft/2);
+spacing = floor((Nfft/2)/(number_of_bodies-1))
+for x = 0:number_of_bodies-1
+    marker(spacing*x+1) = 0.5*pi;
+end
 figure (22);
 plot(angle(Signalout(1:Nfft/2)));
+title('output angle');
+xlabel('f_s');
+hold on;
+plot(marker);
+xlabel('f_s');
+ylabel('angle');
+hold off;
+print(22,'output angle.svg','-dsvg');
 figure (23);
 size14 = abs(Signalout(10))
 angle14 = angle(Signalout(10))
@@ -181,6 +206,14 @@ size15 = abs(Signalout(100))
 angle15 = angle(Signalout(100))
 angle15 = ttfa(100)
 plot(ttfa(1:Nfft/2));
+title('actual angles');
+xlabel('f_s');
+hold on;
+plot(marker);
+xlabel('f_s');
+ylabel('angle');
+hold off;
+print(23,'actual angles.svg','-dsvg');
 figure(24);
 plot(phases2*pi);
 figure(25);
