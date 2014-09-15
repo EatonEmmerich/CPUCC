@@ -38,3 +38,5 @@ void SingleVector::setEntry(double re, double im, unsigned int i){
     complex d = complex(re,im);
     data[i] = d;
 }
+
+

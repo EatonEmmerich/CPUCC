@@ -87,6 +87,11 @@ public:
 		}
 		return *this;
 	}
+	
+	unsigned int getSize(){
+		return length;
+	}
+	
 };
 
 #endif	/* SINGLEVECTOR_H */

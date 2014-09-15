@@ -131,7 +131,10 @@ void print_readme() {
 
 SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
     string line;
-    SingleVector * result = new SingleVector [axis2];
+    SingleVector * result = new SingleVector [axis2];   //maybe make this rather a double vector?
+    for(int x = 0; x < axis1; x++){
+        result[x] = SingleVector(axis1);
+    }
     int i = 0;
     int j = 0;
     while (getline(myfile, line)) {

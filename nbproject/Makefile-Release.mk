@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Source/DoubleVector.o \
+	${OBJECTDIR}/Source/PolyphaseFilter.o \
 	${OBJECTDIR}/Source/SingleVector.o \
 	${OBJECTDIR}/Source/complex.o \
 	${OBJECTDIR}/Source/fft.o \
@@ -76,6 +77,11 @@ ${OBJECTDIR}/Source/DoubleVector.o: Source/DoubleVector.cpp
 	${MKDIR} -p ${OBJECTDIR}/Source
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/DoubleVector.o Source/DoubleVector.cpp
+
+${OBJECTDIR}/Source/PolyphaseFilter.o: Source/PolyphaseFilter.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Source
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/PolyphaseFilter.o Source/PolyphaseFilter.cpp
 
 ${OBJECTDIR}/Source/SingleVector.o: Source/SingleVector.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
@@ -130,6 +136,19 @@ ${OBJECTDIR}/Source/DoubleVector_nomain.o: ${OBJECTDIR}/Source/DoubleVector.o So
 	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/DoubleVector_nomain.o Source/DoubleVector.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/Source/DoubleVector.o ${OBJECTDIR}/Source/DoubleVector_nomain.o;\
+	fi
+
+${OBJECTDIR}/Source/PolyphaseFilter_nomain.o: ${OBJECTDIR}/Source/PolyphaseFilter.o Source/PolyphaseFilter.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Source
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Source/PolyphaseFilter.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o Source/PolyphaseFilter.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Source/PolyphaseFilter.o ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o;\
 	fi
 
 ${OBJECTDIR}/Source/SingleVector_nomain.o: ${OBJECTDIR}/Source/SingleVector.o Source/SingleVector.cpp 
