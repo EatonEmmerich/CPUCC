@@ -55,17 +55,17 @@ Signalfft = zeros(Number_Of_Signals,Nfft);
 Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft);
 Signalout = zeros(1,Nfft);
 Signalin = zeros(Number_Of_Signals,N);
-analysis_filter = sinc(((1:Window_Size)-Window_Size/2)/Window_Size);
-HanningWindow = 1/2-(1/2)*cos(2*pi*(1:Window_Size)/Window_Size);
+analysis_filter = sinc(((0:N-1)-N/2)/Window_Size);
+HanningWindow = 1/2-(1/2)*cos(2*pi*(0:N-1)/N);
 pre_filter = analysis_filter.*HanningWindow;
-figure(22);
-plot(t(1:Window_Size),HanningWindow);
+figure(48);
+plot(t(1:N),pre_filter);
 title('polyphase filter prefilter','fontsize',14);
 xlabel('time(s)');
-set(22,'paperunits','inches');
-set(22,'paperorientation','portrait');
-set(22,'papersize',[H,W]);
-print(22,'polyphasepre.svg','-dsvg');
+set(48,'paperunits','inches');
+set(48,'paperorientation','portrait');
+set(48,'papersize',[H,W]);
+print(48,'polyphasepre.svg','-dsvg');
 % iterate every other signal
 
 % Set up realtime signals
@@ -74,13 +74,13 @@ noise2 = 2*rand(1,number_of_bodies)-1;
 zerr = zeros(1,Nfft);
 x2 = 1;
 for x = 1:Num_Of_Antennas
-    % EDIT: added delay on signals as antenna increases
-%     TEMP = [zeros(1,10*x) Signal_no_noise zeros(1,N*2/3+1-(10*x))];
     Signal_no_noise_s = zeros(1,N);
     for(z = 1:number_of_bodies)
         Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
     end
     Signalt = ((Signal_no_noise)+(Signal_no_noise_s)/signal_to_noise_input);
+%add gaussian noise
+    Signalt = Signalt + 0.5*rand(1,N);
     figure(x+2);
     subplot(1,2,1);
     plot(t(1:N),abs(Signalt(1:N)));
@@ -97,7 +97,7 @@ for x = 1:Num_Of_Antennas
     print(x+2,name,'-dsvg');
     Signalin(x,:) = Signalt;
     phases2 = noise2;
-    b = 2
+
     %create overlap sequences:
     start = 1;
     window_c = Window_Size; % end of the window currently being shifted
@@ -107,8 +107,9 @@ for x = 1:Num_Of_Antennas
     while window_c < N
         Signalf(z,:) = (Signalt(start:(window_c)));
 %       Signalf(z,:) = Signalt(1:Nfft);
+	pre_part = pre_filter(start:(window_c));
         % add prefilter
-        Signalf(z,:) = hilbert(Signalf(z,:).*pre_filter);
+        Signalf(z,:) = hilbert(Signalf(z,:).*pre_part);
         start = window_c+1;
         window_c = window_c + Window_Size;
         TEMP = TEMP + Signalf(z,:);

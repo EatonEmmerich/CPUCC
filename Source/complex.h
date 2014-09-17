@@ -36,7 +36,7 @@ public:
 	//   Basic operations - taking parts
 	double re() const { return m_re; }
 	double im() const { return m_im; }
-
+	
 	//   Conjugate number
 	complex conjugate() const
 	{

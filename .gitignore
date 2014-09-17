@@ -223,3 +223,5 @@ FakesAssemblies/
 
 # octave images
 *.svg
+# csv files
+*.csv

@@ -9,18 +9,6 @@ using namespace std;
 
 const char * options[OPTIONSIZE] = {"/bitdepth", "/bd", "/windowsize", "/ws", "/numsig", "/ns", "/numthreads", "/nt"};
 
-
-// Function prototypes:
-int parse_arguments(int argc, std::string argv[]);
-void print_parse_error(std::string err);
-void print_readme();
-bool is_valid_name(std::string in);
-void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2);
-SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
-template <typename T>
-T StringToNumber(const string &in);
-SingleVector * Read_data(string filename);
-
 // program variables:
 int numthreads = DEFAULT_THREADS;
 int numbits = DEFAULT_BITS;
@@ -99,6 +87,15 @@ T StringToNumber(const string &in) {
     stringstream ss(in);
     T result;
     return ss >> result ? result : 0;
+}
+
+template <typename T>
+string NumberToString(const T in) {
+    ostringstream convert;
+    convert << in;
+    string result;
+    result = convert.str();
+    return result;
 }
 
 bool is_valid_name(std::string in) {
@@ -195,7 +192,6 @@ SingleVector * Read_data(const string filename) {
     unsigned int axis1 = 0;
     unsigned int axis2 = 0;
     std::ifstream myfile;
-    string line;
     try {
         myfile.open(filename.c_str(), ios::in);
         if (myfile.is_open()) {
@@ -203,6 +199,7 @@ SingleVector * Read_data(const string filename) {
             myfile.close();
             myfile.open(filename.c_str(), ios::in);
             output = getdata(myfile, axis1, axis2);
+            myfile.close();
         } else {
             throw FileNotFoundException();
         }
@@ -210,4 +207,34 @@ SingleVector * Read_data(const string filename) {
         cout << e.what() << "\nPlease contact the author.";
     }
     return output;
+}
+
+void Save_data(const string filename, SingleVector data){
+    std::fstream myfile;
+    try {
+        myfile.open(filename.c_str(),ios::out);
+        if (myfile.is_open()){
+            for(unsigned int x = 0; x < data.getSize()-1; x++){
+                myfile << toString((data.getEntry(x))) + ",";
+            }
+            myfile << toString((data.getEntry(data.getSize()-1)));
+            myfile.close();
+        }
+    } catch (exception& e) {
+        cout << e.what() << "\nPlease contact the author.";
+    }
+}
+
+std::string toString(complex in){
+    std::string out = "";
+    out = out + NumberToString<double>(in.re()) + " " + NumberToString<double>(in.im()) + "i";
+    return out;
+}
+	
+std::string toStringVect(complex in){
+    std::string out = "";
+    double amp = sqrt((in.re()*in.re())+(in.im()*in.im()));
+    double angle = atan(in.im()/in.re());
+    out = out + NumberToString<double>(amp) + "e^-i" + NumberToString<double>(angle);
+    return out;
 }

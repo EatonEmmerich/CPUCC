@@ -16,7 +16,7 @@ private:
 public:
 	std::string printData();
 	void setEntry(complex , unsigned int);
-	complex getEntry(unsigned int);
+	complex getEntry(unsigned int) const;
 	void setEntry(double, unsigned int);
 	void setEntry(double, double, unsigned int);
 	
@@ -28,11 +28,27 @@ public:
 		data = new complex [length];
 	}
 	
+	SingleVector(const SingleVector& other):length(other.length){
+		data = new complex [length];
+		for(int x = 0; x < length; x ++){
+			data[x] = other.getEntry(x);
+		}
+	}
+	
 	virtual ~SingleVector(){
 		delete []data;
 	}
 	SingleVector& operator= (const SingleVector & sv) {
+		//assume same lengths
 		/* make a copy here */
+		if(length == sv.length){
+			for(unsigned int x = 0; x < (sv).length; x++){
+				data[x] = sv.getEntry(x);
+			}
+		}
+		else{
+			//throw something
+		}
 		return *this;
 	}
 	

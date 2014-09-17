@@ -21,7 +21,7 @@ std::string SingleVector::printData(){
  */
 
 
-complex SingleVector::getEntry(unsigned int i){
+complex SingleVector::getEntry(unsigned int i) const{
     return data[i];
 }
 

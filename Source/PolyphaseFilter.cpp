@@ -3,7 +3,7 @@
  * Apply default polyphasefilter on one stream.
  */
 SingleVector ppf(unsigned int N, SingleVector input){
-    ppf(prefilter_window(N),input);
+    ppf(prefilter_window(N,input.getSize()),input);
 }
 
 SingleVector ppf(SingleVector custom_Window, SingleVector input){
@@ -26,12 +26,24 @@ SingleVector ppf(SingleVector custom_Window, SingleVector input){
 /*
  * Default prefilter window
  */
-SingleVector prefilter_window(unsigned int N){
-    SingleVector result = SingleVector(N);
-    for(unsigned int x = 0; x < N; x++){
-        double temp1 = 1/2-((1/2) * cos(2 * M_PI / N)); // hamming window
-        double temp2 = sin((x-N/2)/N)/((x-N/2)/N);
-        result.setEntry(temp1*temp2,x);
+SingleVector prefilter_window(unsigned int N,unsigned int M){
+    SingleVector result = SingleVector(M);
+    double Nd = (double) N;
+    double Md = (double) M;
+    for(unsigned int x = 0; x < M; x++){
+        double xd = (double) x;
+        double temp3 = (2 * M_PI * (xd / Md));
+        double temp1 = 0.5-0.5*cos(temp3); // hamming window
+        double temp2 = 0;
+        
+        double temp4 = (xd-Md/2)/Nd;
+        if(temp4 != 0){
+            temp2 = sin(temp4)/(temp4);      // sinc function
+        }
+        else{
+            temp2 = 1;
+        }
+        result.setEntry(temp2,x);
     }
     return result;
 }

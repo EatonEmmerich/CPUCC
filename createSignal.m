@@ -1,7 +1,7 @@
 t = 1/(1*10^9);
 N = 50000;
 answr = zeros(1,N);
-phi = [pi/4 -pi/16 0 -pi/8]
+phi = [pi/4 -pi/160 0 -pi/800]
 ts = (1:N)*t;
 pc = 4
 %sin(2*pi*f*t+\tetha)
@@ -14,12 +14,12 @@ for pcc = 1:pc
 	pn = phi(pcc)
 	x = (pcc-1)*freq_range_div_sig;
 	if (pcc-1) == 0
-		x = x + freq_start;
+		x = x + freq_start
 	end
 	while x < pcc*freq_range_div_sig
 %	for x = (pcc-1)*freq_range_div_sig+1:pcc*freq_range_div_sig
 		x = x + freq_res;
-		TEMP = sin(2*pi*x*ts+pn);
+		TEMP = sin(2*pi*x*(ts+pn));
 		answr += TEMP;
 		count ++;
 	end

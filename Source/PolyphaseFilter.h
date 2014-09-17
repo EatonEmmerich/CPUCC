@@ -9,7 +9,7 @@
 #define	POLYPHASEFILTER_H
 #include "NOR.h"
 #include <math.h>
-SingleVector prefilter_window(unsigned int N);
+SingleVector prefilter_window(unsigned int N,unsigned int M);
 SingleVector ppf(unsigned int N, SingleVector input);
 SingleVector ppf(SingleVector custom_Window, SingleVector input);
 
