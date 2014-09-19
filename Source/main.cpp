@@ -26,7 +26,7 @@ int main(int argc, const char * argv[]) {
     //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
-        SingleVector * Data = Read_data(filename);
+        DoubleVector * Data = Read_data(filename);
         string output = Data->printData();
         cout << output;
     }
@@ -126,12 +126,10 @@ void print_readme() {
     myfile.close();
 }
 
-SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
+DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
     string line;
-    SingleVector * result = (SingleVector*) ::operator new (sizeof(SingleVector(axis1))*axis2);   //maybe make this rather a double vector? YES!
-    for(int x = 0; x < axis2; x++){
-        result[x] = SingleVector(axis1);
-    }
+    DoubleVector * result = new DoubleVector(axis1,axis2);   //maybe make this rather a double vector? YES!
+    
     int i = 0;
     int j = 0;
     stringstream lineStream;
@@ -140,14 +138,15 @@ SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2)
         string ex2;
         while (getline(lineStream, ex2, ',')) {
             complex temp = complex(StringToNumber<double>(ex2));
-            result[i].setEntry(temp, j);
+            result->setEntry(temp, i,j);
             j++;
             
         }
         j = 0;
         i++;
+        lineStream.str("");
+        lineStream.clear();
     }
-    cout<<"notsegfault\n";
     return result;
 }
 
@@ -190,8 +189,7 @@ void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2) {
 
 }
 
-SingleVector * Read_data(const string filename) {
-    SingleVector * output;
+DoubleVector * Read_data(const string filename) {
     unsigned int axis1 = 0;
     unsigned int axis2 = 0;
     std::ifstream myfile;
@@ -201,16 +199,15 @@ SingleVector * Read_data(const string filename) {
             checkformat(myfile, &axis1, &axis2);
             myfile.close();
             myfile.open(filename.c_str(), ios::in);
-            output = getdata(myfile, axis1, axis2);
-            cout << "notsegfault2";
+            DoubleVector * output = getdata(myfile, axis1, axis2);
             myfile.close();
+            return output;
         } else {
             throw FileNotFoundException();
         }
     } catch (exception& e) {
         cout << e.what() << "\nPlease contact the author.";
     }
-    return output;
 }
 
 void Save_data(const string filename, SingleVector data){

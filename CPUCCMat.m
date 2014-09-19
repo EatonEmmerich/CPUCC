@@ -1,14 +1,14 @@
 samplingFreq = 2*10^9; % sampling frequency
-Window_Size = 2^11; % size of window to cross multiply
+Window_Size = 2^15; % size of window to cross multiply
 number_of_bodies = 5;
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^8; % radians/sec
-signal_time = 0.000005; % in seconds
+signal_time = 0.0005; % in seconds
 N = signal_time/(1/samplingFreq); % total samples in input signal
 Nsub = mod(N,Window_Size)
 N = N-Nsub
 Nfft = Window_Size%/2 % total samples in FFT output
-Num_Of_Windows_Per_Signal = ceil(N/Window_Size);
+Num_Of_Windows_Per_Signal = N/Window_Size;
 Number_Of_Signals = Num_Of_Antennas
 Number_Of_Complex_Multiplications = 1/2*(Number_Of_Signals-1)*Number_Of_Signals
 signal_to_noise_input = 0.5; % multiplied to noise then added to signal
@@ -24,7 +24,7 @@ fs_input = linspace(0,1,Nfft/2);
 %plot(t);
 H = 3; % sizes of pictures.
 W = 4;
-Signal_no_noise = 20*(cos(signal_frequency*t) + cos((signal_frequency+15*10^9)*t)); %frequency noise
+Signal_no_noise = 1*(cos(signal_frequency*t) + cos((signal_frequency+15*10^9)*t)); %frequency noise
 figure(1);
 subplot(1,2,1);
 plot(t(1:Nfft),abs(Signal_no_noise(1:Nfft)));
@@ -53,9 +53,9 @@ print(2,'input freq.svg','-dsvg');
 %windowcoef = (Nfft)/f; % commonly used constant
 Signal_no_noise_s = csvread('Inputtwodim');
 Signalf = zeros(Num_Of_Windows_Per_Signal,Window_Size);
-Signalfft = zeros(Number_Of_Signals,Nfft);
-Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft);
-Signalout = zeros(1,Nfft);
+Signalfft = zeros(Number_Of_Signals,Nfft/2);
+Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft/2);
+Signalout = zeros(1,Nfft/2);
 Signalin = zeros(Number_Of_Signals,N);
 analysis_filter = sinc(((0:N-1)-N/2)/Window_Size);
 HanningWindow = 1/2-(1/2)*cos(2*pi*(0:N-1)/N);
@@ -77,7 +77,7 @@ for x = 1:Num_Of_Antennas
     %for(z = 1:number_of_bodies)
     %    Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
     %end
-    Signalt = ((Signal_no_noise)+(Signal_no_noise_s(x))/signal_to_noise_input);
+    Signalt = ((Signal_no_noise)+20*(Signal_no_noise_s(x))/signal_to_noise_input);
 %add gaussian noise
     Signalt = Signalt + 0.5*rand(1,N);
     figure(x+2);
@@ -95,7 +95,6 @@ for x = 1:Num_Of_Antennas
     name = ['a' num2str(x) 'outf.svg'];
     print(x+2,name,'-dsvg');
     Signalin(x,:) = Signalt;
-    phases2 = noise2;
 
     %create overlap sequences:
     start = 1;
@@ -108,14 +107,16 @@ for x = 1:Num_Of_Antennas
 %       Signalf(z,:) = Signalt(1:Nfft);
 	pre_part = pre_filter(start:(window_c));
         % add prefilter
-        Signalf(z,:) = hilbert(Signalf(z,:).*pre_part);
+        Signalf(z,:) = Signalf(z,:).*pre_part;
+	figure(z+100*x);
+	plot(angle(fft(Signalt(start:window_c))));
         start = window_c+1;
         window_c = window_c + Window_Size;
         TEMP = TEMP + Signalf(z,:);
         z = z + 1;
     end
-    TEMP = fft(TEMP/(z-1));
-    Signalfft(x2,:) = TEMP(1:Nfft);
+    TEMP = fft(hilbert(TEMP/(z-1)))/Nfft;
+    Signalfft(x2,:) = TEMP(1:Nfft/2);
     x2 = x2 + 1;
     
 end
@@ -145,7 +146,7 @@ end
 z = 1; % holds position, computation too complex for pre calculated indices here.
 for x = 1:Number_Of_Signals
     for y = (x+1):Number_Of_Signals
-        Signalmul(z,:) = Signalfft(x,:).*conj(Signalfft(y,:))/Nfft;
+        Signalmul(z,:) = Signalfft(x,:).*conj(Signalfft(y,:));
         z=z+1;
     end
 end
@@ -153,8 +154,6 @@ end
 for x = 1:Number_Of_Complex_Multiplications
     Signalout = Signalmul(x,:)+Signalout;
 end
-
-Signalout = Signalout/(z-1);
 
 %figure(1);
 %plot(t,Signal_no_noise);

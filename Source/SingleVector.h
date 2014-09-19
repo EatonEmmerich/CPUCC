@@ -20,7 +20,7 @@ public:
 	void setEntry(double, unsigned int);
 	void setEntry(double, double, unsigned int);
 	
-	SingleVector():length(5){
+	SingleVector():length(1){
 		data = new complex [length];
 	}
 	

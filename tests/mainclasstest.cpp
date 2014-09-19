@@ -24,11 +24,12 @@ void mainclasstest::tearDown() {
 }
 
 void mainclasstest::testRead_data() {
-    SingleVector * a = Read_data("Resources/test.csv");
+    DoubleVector * b =  Read_data("Resources/test.csv");
+    DoubleVector a = *b;
     bool right = true;
-    if(a[0].getEntry(0).re() != 5) right = false;
-    if(a[0].getEntry(1).re() != 20) right = false;
-    if(a[0].getEntry(2).re() != 10.0000095) right = false;
+    if(a.getEntry(0,0).re() != 5) right = false;
+    if(a.getEntry(0,1).re() != 20) right = false;
+    if(a.getEntry(0,2).re() != 10.0000095) right = false;
     CPPUNIT_ASSERT(right);
 }
 
@@ -79,15 +80,14 @@ void mainclasstest::testSave_dataim() {
 }
 
 void mainclasstest::testRead_data2dim() {
-    cout << "isrun";
-    SingleVector * a = Read_data("Resources/test.csv");
-    cout << "linex";
+    DoubleVector * b = Read_data("Resources/test.csv");
+    DoubleVector a = * b;
     bool right = true;
-    //if(a[0].getEntry(0).re() != 5) right = false;
-    //if(a[0].getEntry(1).re() != 20) right = false;
-    //if(a[0].getEntry(2).re() != 10.0000095) right = false;
-    //if(a[1].getEntry(0).re() != 20) right = false;
-    //if(a[1].getEntry(1).re() != 10.095) right = false;
-    //if(a[1].getEntry(2).re() != 5) right = false;
+    if(a.getEntry(0,0).re() != 5) right = false;
+    if(a.getEntry(0,1).re() != 20) right = false;
+    if(a.getEntry(0,2).re() != 10.0000095) right = false;
+    if(a.getEntry(1,0).re() != 20) right = false;
+    if(a.getEntry(1,1).re() != 10.095) right = false;
+    if(a.getEntry(1,2).re() != 5) right = false;
     CPPUNIT_ASSERT(right);
 }

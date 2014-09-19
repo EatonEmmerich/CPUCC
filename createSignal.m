@@ -1,6 +1,7 @@
 tf = 1/(2*10^9);
-ts = 0.000005;
-N = ts/tf
+ts = 0.0001;
+N = ts/(tf); % total samples in input signal
+
 answr = zeros(2,N);
 tN = linspace(0,ts,N);
 c = 299792458;

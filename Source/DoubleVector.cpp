@@ -7,21 +7,6 @@
 
 #include "DoubleVector.h"
 
-
-DoubleVector::DoubleVector(unsigned int axis1, unsigned int axis2) {
-	this->axis1 = axis1;
-	this->axis2 = axis2;
-	data = new complex [axis1 * axis2];
-}
-
-//DoubleVector::DoubleVector(const DoubleVector& orig) {
-//}
-
-DoubleVector::~DoubleVector() {
-    delete [] data;
-	// TODO- deconstruct the data
-}
-
 std::string DoubleVector::printData() {
 	std::string out = "";
 	for (unsigned int x = 0; x < axis1; x++) {
