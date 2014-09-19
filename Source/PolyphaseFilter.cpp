@@ -3,18 +3,19 @@
  * Apply default polyphasefilter on one stream.
  */
 SingleVector ppf(unsigned int N, SingleVector input){
-    ppf(prefilter_window(N,input.getSize()),input);
+    ppf(N,prefilter_window(N,input.getSize()),input);
 }
 
-SingleVector ppf(SingleVector custom_Window, SingleVector input){
+SingleVector ppf(unsigned int N,SingleVector custom_Window, SingleVector input){
     unsigned int M = input.getSize();
-    unsigned int N = custom_Window.getSize();
     SingleVector result = SingleVector(N);
     int x = 0;
     while(x < M){
         SingleVector temp = SingleVector(N);
+        SingleVector par_Window = SingleVector(N);
         for(int y = 0; y < N; y++){
             temp.setEntry(input.getEntry(x),y);
+            par_Window.setEntry(custom_Window.getEntry(x),y);
             x++;
         }
         temp = temp*custom_Window;
@@ -43,7 +44,7 @@ SingleVector prefilter_window(unsigned int N,unsigned int M){
         else{
             temp2 = 1;
         }
-        result.setEntry(temp2,x);
+        result.setEntry(temp2*temp1,x);
     }
     return result;
 }

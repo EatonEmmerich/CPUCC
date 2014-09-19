@@ -3,7 +3,7 @@ Window_Size = 2^15; % size of window to cross multiply
 number_of_bodies = 5;
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^8; % radians/sec
-signal_time = 0.0005; % in seconds
+signal_time = 0.0001; % in seconds
 N = signal_time/(1/samplingFreq); % total samples in input signal
 Nsub = mod(N,Window_Size)
 N = N-Nsub
@@ -52,6 +52,7 @@ ylabel('angle');
 print(2,'input freq.svg','-dsvg');
 %windowcoef = (Nfft)/f; % commonly used constant
 Signal_no_noise_s = csvread('Inputtwodim');
+Signal_no_noise_s = Signal_no_noise_s(:,1:N);
 Signalf = zeros(Num_Of_Windows_Per_Signal,Window_Size);
 Signalfft = zeros(Number_Of_Signals,Nfft/2);
 Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft/2);
@@ -108,8 +109,8 @@ for x = 1:Num_Of_Antennas
 	pre_part = pre_filter(start:(window_c));
         % add prefilter
         Signalf(z,:) = Signalf(z,:).*pre_part;
-	figure(z+100*x);
-	plot(angle(fft(Signalt(start:window_c))));
+	%figure(z+100*x);
+	%plot(angle(fft(Signalt(start:window_c))));
         start = window_c+1;
         window_c = window_c + Window_Size;
         TEMP = TEMP + Signalf(z,:);
