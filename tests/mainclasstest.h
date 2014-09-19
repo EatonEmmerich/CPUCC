@@ -18,7 +18,8 @@ class mainclasstest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST(testRead_data);
 	CPPUNIT_TEST(testSave_data);
 	CPPUNIT_TEST(testSave_dataim);
-
+	CPPUNIT_TEST(testRead_data2dim);
+	
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,6 +32,7 @@ private:
 	void testRead_data();
 	void testSave_data();
 	void testSave_dataim();
+	void testRead_data2dim();
 };
 
 #endif	/* MAINCLASSTEST_H */

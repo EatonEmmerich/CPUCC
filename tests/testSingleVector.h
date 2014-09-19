@@ -10,6 +10,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "../Source/SingleVector.h"
+#include "../Source/main.h"
 //#include <iostream>
 //#include <sstream>
 //#include <fstream>

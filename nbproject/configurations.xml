@@ -31,6 +31,14 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f4"
+                     displayName="DoubleVectorTest"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/DoubleVectTest.cpp</itemPath>
+        <itemPath>tests/DoubleVectTest.h</itemPath>
+        <itemPath>tests/RunDoubleTest.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2" displayName="MainTest" projectFiles="true" kind="TEST">
         <itemPath>tests/RunMainTest.cpp</itemPath>
         <itemPath>tests/mainclasstest.cpp</itemPath>
@@ -148,6 +156,26 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <item path="tests/DoubleVectTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/DoubleVectTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/RunDoubleTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="tests/RunMainTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RunPolyTest.cpp" ex="false" tool="1" flavor2="0">
@@ -265,6 +293,26 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <item path="tests/DoubleVectTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/DoubleVectTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/RunDoubleTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="tests/RunMainTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RunPolyTest.cpp" ex="false" tool="1" flavor2="0">

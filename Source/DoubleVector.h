@@ -9,18 +9,20 @@
 #define	DOUBLEVECTOR_H
 #include "NOR.h"
 
+class SingleVector;
+
 class DoubleVector {
 private:
 	unsigned int axis1;
 	unsigned int axis2;
-	complex ** data;
+	complex * data;
 public:
 	DoubleVector(unsigned int, unsigned int);
 	virtual ~DoubleVector();
 	std::string printData();
-	void setEntry(complex *, unsigned int, unsigned int);
-	complex ** getSingleVector(unsigned int);
-	complex * getEntry(unsigned int,unsigned int);
+	void setEntry(complex , unsigned int, unsigned int);
+	SingleVector getSingleVector(unsigned int);
+	complex getEntry(unsigned int,unsigned int);
 };
 
 

@@ -1,32 +1,39 @@
-t = 1/(1*10^9);
-N = 50000;
-answr = zeros(1,N);
-phi = [pi/4 -pi/160 0 -pi/800]
-ts = (1:N)*t;
-pc = 4
-%sin(2*pi*f*t+\tetha)
-freq_range = 0.5*10^9;
-freq_res = 1000;
-freq_start = 1000;
-freq_range_div_sig = freq_range/pc;
+tf = 1/(2*10^9);
+ts = 0.000005;
+N = ts/tf
+answr = zeros(2,N);
+tN = linspace(0,ts,N);
+c = 299792458;
+freq_range = 1*10^9;
+freq_res = 10000;
+tsin = linspace(0,1,freq_range/freq_res);
+tetha = sin(pi*tsin);
+f = 0;
 count = 0;
-for pcc = 1:pc
-	pn = phi(pcc)
-	x = (pcc-1)*freq_range_div_sig;
-	if (pcc-1) == 0
-		x = x + freq_start
-	end
-	while x < pcc*freq_range_div_sig
-%	for x = (pcc-1)*freq_range_div_sig+1:pcc*freq_range_div_sig
-		x = x + freq_res;
-		TEMP = sin(2*pi*x*(ts+pn));
-		answr += TEMP;
-		count ++;
-	end
+x = 1;
+TEMP = zeros(2,N);
+while f < freq_range
+%or x = (pcc-1)*freq_range_div_sig+1:pcc*freq_range_div_sig
+	Temp2 = rand(1);
+	TEMP(2,:) = Temp2*cos(2*pi*f*(tN)+0.5);
+	TEMP(1,:) = Temp2*cos(2*pi*f*(tN));
+	answr += TEMP;
+	count ++;
+	x++;
+	f = f + freq_res;
 end
+%[A, B] = butter(5,0.9);
+
+%answr(1,:) = filter(A,B,answr(1,:));
+%answr(2,:) = filter(A,B,answr(2,:));
+%answr(:,:)/((freq_range)/freq_res);
 count
-csvwrite('InputSignal2',answr);
+csvwrite('Inputtwodim',answr);
 figure(1);
-plot(abs(fft(answr)));
+plot(20*log(abs(fft(answr(1,:)/N))));
 figure(2);
-plot(angle(fft(answr)));
+plot(angle(fft(answr(1,:))));
+figure(3);
+plot(20*log(abs(fft(answr(2,:)/N))));
+figure(4);
+plot(angle(fft(answr(2,:))));

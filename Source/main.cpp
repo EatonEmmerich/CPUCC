@@ -128,23 +128,26 @@ void print_readme() {
 
 SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
     string line;
-    SingleVector * result = new SingleVector [axis2];   //maybe make this rather a double vector?
-    for(int x = 0; x < axis1; x++){
+    SingleVector * result = (SingleVector*) ::operator new (sizeof(SingleVector(axis1))*axis2);   //maybe make this rather a double vector? YES!
+    for(int x = 0; x < axis2; x++){
         result[x] = SingleVector(axis1);
     }
     int i = 0;
     int j = 0;
+    stringstream lineStream;
     while (getline(myfile, line)) {
-        stringstream lineStream(line);
+        lineStream << line;
         string ex2;
         while (getline(lineStream, ex2, ',')) {
             complex temp = complex(StringToNumber<double>(ex2));
             result[i].setEntry(temp, j);
             j++;
+            
         }
         j = 0;
         i++;
     }
+    cout<<"notsegfault\n";
     return result;
 }
 
@@ -199,6 +202,7 @@ SingleVector * Read_data(const string filename) {
             myfile.close();
             myfile.open(filename.c_str(), ios::in);
             output = getdata(myfile, axis1, axis2);
+            cout << "notsegfault2";
             myfile.close();
         } else {
             throw FileNotFoundException();

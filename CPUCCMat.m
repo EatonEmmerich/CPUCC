@@ -1,10 +1,12 @@
-samplingFreq = 100*10^9; % sampling frequency
+samplingFreq = 2*10^9; % sampling frequency
 Window_Size = 2^11; % size of window to cross multiply
 number_of_bodies = 5;
 Num_Of_Antennas = 2;
-signal_frequency = 40*10^9; % radians/sec
-signal_time = 0.00000020; % in seconds
-N = signal_time/(1/samplingFreq) % total samples in input signal
+signal_frequency = 40*10^8; % radians/sec
+signal_time = 0.000005; % in seconds
+N = signal_time/(1/samplingFreq); % total samples in input signal
+Nsub = mod(N,Window_Size)
+N = N-Nsub
 Nfft = Window_Size%/2 % total samples in FFT output
 Num_Of_Windows_Per_Signal = ceil(N/Window_Size);
 Number_Of_Signals = Num_Of_Antennas
@@ -22,7 +24,7 @@ fs_input = linspace(0,1,Nfft/2);
 %plot(t);
 H = 3; % sizes of pictures.
 W = 4;
-Signal_no_noise = 20*(cos(signal_frequency*t) + sin((signal_frequency+15*10^9)*t)); %frequency noise
+Signal_no_noise = 20*(cos(signal_frequency*t) + cos((signal_frequency+15*10^9)*t)); %frequency noise
 figure(1);
 subplot(1,2,1);
 plot(t(1:Nfft),abs(Signal_no_noise(1:Nfft)));
@@ -49,7 +51,7 @@ xlabel('f_s');
 ylabel('angle');
 print(2,'input freq.svg','-dsvg');
 %windowcoef = (Nfft)/f; % commonly used constant
-
+Signal_no_noise_s = csvread('Inputtwodim');
 Signalf = zeros(Num_Of_Windows_Per_Signal,Window_Size);
 Signalfft = zeros(Number_Of_Signals,Nfft);
 Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft);
@@ -69,16 +71,13 @@ print(48,'polyphasepre.svg','-dsvg');
 % iterate every other signal
 
 % Set up realtime signals
-noise1 = 2*rand(1,number_of_bodies)-1
-noise2 = 2*rand(1,number_of_bodies)-1;
-zerr = zeros(1,Nfft);
 x2 = 1;
 for x = 1:Num_Of_Antennas
-    Signal_no_noise_s = zeros(1,N);
-    for(z = 1:number_of_bodies)
-        Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
-    end
-    Signalt = ((Signal_no_noise)+(Signal_no_noise_s)/signal_to_noise_input);
+    %Signal_no_noise_s = zeros(1,N);
+    %for(z = 1:number_of_bodies)
+    %    Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
+    %end
+    Signalt = ((Signal_no_noise)+(Signal_no_noise_s(x))/signal_to_noise_input);
 %add gaussian noise
     Signalt = Signalt + 0.5*rand(1,N);
     figure(x+2);
@@ -104,7 +103,7 @@ for x = 1:Num_Of_Antennas
     z = 1;
     TEMP = zeros(1,Window_Size);
     %DO POLYPHASE
-    while window_c < N
+    while window_c <= N
         Signalf(z,:) = (Signalt(start:(window_c)));
 %       Signalf(z,:) = Signalt(1:Nfft);
 	pre_part = pre_filter(start:(window_c));
@@ -182,17 +181,11 @@ xlabel('f_s');
 ylabel('angle');
 print(21,'outf.svg','-dsvg');
 
-marker = zeros(1,Nfft/2);
-spacing = floor((Nfft/2)/(number_of_bodies-1))
-for x = 0:number_of_bodies-1
-    marker(spacing*x+1) = 0.5*pi;
-end
 figure (22);
 plot(angle(Signalout(1:Nfft/2)));
 title('output angle');
 xlabel('f_s');
 hold on;
-plot(marker);
 xlabel('f_s');
 ylabel('angle');
 hold off;
@@ -200,22 +193,17 @@ print(22,'output angle.svg','-dsvg');
 figure (23);
 size14 = abs(Signalout(10))
 angle14 = angle(Signalout(10))
-ttta = angle(fft(Signalin(1,:).*conj(fft(Signalin(2,:)))));
-ttfa = angle(fft(Signalin(1,1:Nfft)).*conj(fft(Signalin(2,1:Nfft))));
-angle14 = ttfa(10)
-size15 = abs(Signalout(100))
-angle15 = angle(Signalout(100))
-angle15 = ttfa(100)
-plot(ttfa(1:Nfft/2));
-title('actual angles');
+ttta = angle(fft(Signal_no_noise_s(1,:)).*conj(fft(Signal_no_noise_s(2,:))));
+%ttfa = angle(fft(Signalin(1,1:Nfft)).*conj(fft(Signalin(2,1:Nfft))));
+%angle14 = ttfa(10)
+%size15 = abs(Signalout(100))
+%angle15 = angle(Signalout(100))
+%angle15 = ttfa(100)
+plot(ttta);
+title('actual angles N = whole signal');
 xlabel('f_s');
 hold on;
-plot(marker);
 xlabel('f_s');
 ylabel('angle');
 hold off;
 print(23,'actual angles.svg','-dsvg');
-figure(24);
-plot(phases2*pi);
-figure(25);
-plot(angle(ifft(Signalout)));

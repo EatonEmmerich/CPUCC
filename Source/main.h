@@ -23,6 +23,8 @@ void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2);
 SingleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
 template <typename T>
 T StringToNumber(const string &in);
+template <typename T>
+string NumberToString(const T in);
 SingleVector * Read_data(const string filename);
 std::string toString(complex in);
 
