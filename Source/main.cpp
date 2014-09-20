@@ -82,21 +82,7 @@ void print_parse_error(std::string err) {
     cout << "Error parsing option \"" << err << "\"\n";
 }
 
-template <typename T>
-T StringToNumber(const string &in) {
-    stringstream ss(in);
-    T result;
-    return ss >> result ? result : 0;
-}
 
-template <typename T>
-string NumberToString(const T in) {
-    ostringstream convert;
-    convert << in;
-    string result;
-    result = convert.str();
-    return result;
-}
 
 bool is_valid_name(std::string in) {
     for (int x = 0; x < OPTIONSIZE; x++) {

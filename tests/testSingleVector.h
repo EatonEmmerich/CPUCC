@@ -21,9 +21,9 @@ class testSingleVector : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST(testMethod);
 	CPPUNIT_TEST(testGetAndSet);
 	CPPUNIT_TEST(testGetAndSet2);
+	CPPUNIT_TEST(testAdd);
 	CPPUNIT_TEST(testCompareEq);
 	CPPUNIT_TEST(testCompareEq2);
-	CPPUNIT_TEST(testAdd);
 	CPPUNIT_TEST(testElMultiply);
 
 	CPPUNIT_TEST_SUITE_END();
@@ -42,8 +42,6 @@ private:
 	void testGetAndSet2();
 	void testCompareEq();
 	void testCompareEq2();
-	SingleVector a;
-	SingleVector b;
 };
 
 #endif	/* TESTSINGLEVECTOR_H */

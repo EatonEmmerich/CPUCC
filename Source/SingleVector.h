@@ -12,17 +12,13 @@
 class SingleVector {
 private:
 	complex * data;
-	unsigned const int length;
+	unsigned int length;
 public:
 	std::string printData();
 	void setEntry(complex , unsigned int);
 	complex getEntry(unsigned int) const;
 	void setEntry(double, unsigned int);
 	void setEntry(double, double, unsigned int);
-	
-	SingleVector():length(1){
-		data = new complex [length];
-	}
 	
 	SingleVector(unsigned int _length): length(_length) {
 		data = new complex [length];
@@ -31,7 +27,14 @@ public:
 	SingleVector(const SingleVector& other):length(other.length){
 		data = new complex [length];
 		for(int x = 0; x < length; x ++){
-			data[x] = other.getEntry(x);
+			data[x] = other.data[x];
+		}
+	}
+	
+	SingleVector(complex * datain, unsigned int N){
+		/*point by reference to values*/
+		for(int x = 0 ; x < N; x++){
+			data = datain;
 		}
 	}
 	
@@ -43,7 +46,7 @@ public:
 		/* make a copy here */
 		if(length == sv.length){
 			for(unsigned int x = 0; x < (sv).length; x++){
-				data[x] = sv.getEntry(x);
+				data[x] = sv.data[x];
 			}
 		}
 		else{
@@ -54,9 +57,12 @@ public:
 	
 	SingleVector operator+ (const SingleVector& other) const
 	{
+		std::cout << (NumberToString(length));
+		std::cout << (NumberToString(this->length));
 		SingleVector ans = SingleVector(length);
-		for(unsigned int x = 0; x < length; x++)
-			(ans.data[x]) = (data[x]) + (other.data[x]);
+		for(unsigned int x = 0; x < length; x++){
+			(ans.data[x]) = (this->data[x]) + (other.data[x]);
+		}
 		return ans;
 	}
 	

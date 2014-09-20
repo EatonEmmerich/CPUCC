@@ -1,6 +1,5 @@
 #ifndef MAIN_H
 #define	MAIN_H
-#include "DoubleVector.h"
 #include "NOR.h"
 #include <math.h>
 using namespace std;
@@ -21,10 +20,6 @@ void print_readme();
 bool is_valid_name(std::string in);
 void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2);
 DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2);
-template <typename T>
-T StringToNumber(const string &in);
-template <typename T>
-string NumberToString(const T in);
 DoubleVector * Read_data(const string filename);
 std::string toString(complex in);
 
