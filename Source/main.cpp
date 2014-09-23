@@ -19,18 +19,49 @@ int main(int argc, const char * argv[]) {
 
     //check input paramaters set into program.
     string *a = new string [argc];
+    int M = 0;
+    int step;
+    vector<vector<double> > Data;
+    vector<double> prefilter;
+    vector<double> pffout1;
+    vector<double> pffout2;
+    vector<complex> Output;
+    vector<complex> fftv1;
+    vector<complex> fftv2;
+    
     for (int x = 0; x < argc; x++){
         a[x] = argv[x];
     }
-    int step = parse_arguments(argc, a);
+    step = parse_arguments(argc, a);
     //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
-        DoubleVector * Data = Read_data(filename);
-        string output = Data->printData();
-        cout << output;
+        
+        Read_data(Data, filename);
     }
-    
+    else{
+        return -1;
+    }
+    M = Data[0].size();
+    prefilter_window(prefilter,numwindowssize*2,M);
+    ppf(pffout1,numwindowssize*2,prefilter,Data[0]);
+    ppf(pffout2,numwindowssize*2,prefilter,Data[1]);
+    //convert to complex type.
+    vector<complex> complexV1;
+    copy_(complexV1,pffout1);
+    vector<complex> complexV2;
+    copy_(complexV2,pffout2);
+    //complex type pointers.
+    //**create threads for each fft**
+    complex * fft1 = &(complexV1[0]);
+    CFFT::Forward(fft1,(numwindowssize));
+    complex * fft2 = &(complexV2[0]);
+    CFFT::Forward(fft2,(numwindowssize));
+    //multiply
+    //**create threads for multiply**
+    Output = FDCorrelate(fft1,fft2,numwindowssize);
+    //done, save output.
+    Save_data("ProgramOutput.csv",Output);
     
     return 0;
 }
@@ -112,10 +143,9 @@ void print_readme() {
     myfile.close();
 }
 
-DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2) {
+void getdata(vector<vector<double> >& Data, ifstream &myfile, unsigned int axis1, unsigned int axis2) {
     string line;
-    DoubleVector * result = new DoubleVector(axis1,axis2);   //maybe make this rather a double vector? YES!
-    
+    Data.resize(axis1,vector<double>(axis2, 0.00));   //maybe make this rather a double vector? YES!
     int i = 0;
     int j = 0;
     stringstream lineStream;
@@ -123,8 +153,8 @@ DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2)
         lineStream << line;
         string ex2;
         while (getline(lineStream, ex2, ',')) {
-            complex temp = complex(StringToNumber<double>(ex2));
-            result->setEntry(temp, i,j);
+            double temp = StringToNumber<double>(ex2);
+            Data[i][j] = temp;
             j++;
             
         }
@@ -133,7 +163,6 @@ DoubleVector * getdata(ifstream &myfile, unsigned int axis1, unsigned int axis2)
         lineStream.str("");
         lineStream.clear();
     }
-    return result;
 }
 
 bool checkaxis2(stringstream &lineStream, unsigned int * axis2) {
@@ -175,7 +204,7 @@ void checkformat(ifstream &file, unsigned int * axis1, unsigned int * axis2) {
 
 }
 
-DoubleVector * Read_data(const string filename) {
+void Read_data(vector<vector<double> >& Data,const string filename) {
     unsigned int axis1 = 0;
     unsigned int axis2 = 0;
     std::ifstream myfile;
@@ -185,9 +214,8 @@ DoubleVector * Read_data(const string filename) {
             checkformat(myfile, &axis1, &axis2);
             myfile.close();
             myfile.open(filename.c_str(), ios::in);
-            DoubleVector * output = getdata(myfile, axis1, axis2);
+            getdata(Data, myfile, axis1, axis2);
             myfile.close();
-            return output;
         } else {
             throw FileNotFoundException();
         }
@@ -196,15 +224,15 @@ DoubleVector * Read_data(const string filename) {
     }
 }
 
-void Save_data(const string filename, SingleVector data){
+void Save_data(const string filename, vector <complex>& data){
     std::fstream myfile;
     try {
         myfile.open(filename.c_str(),ios::out);
         if (myfile.is_open()){
-            for(unsigned int x = 0; x < data.getSize()-1; x++){
-                myfile << toString((data.getEntry(x))) + ",";
+            for(unsigned int x = 0; x < data.size()-1; x++){
+                myfile << toString((data[x])) + ",";
             }
-            myfile << toString((data.getEntry(data.getSize()-1)));
+            myfile << toString((data[(data.size()-1)]));
             myfile.close();
         }
     } catch (exception& e) {
@@ -224,4 +252,11 @@ std::string toStringVect(complex in){
     double angle = atan(in.im()/in.re());
     out = out + NumberToString<double>(amp) + "e^-i" + NumberToString<double>(angle);
     return out;
+}
+
+vector<complex> FDCorrelate(complex * A,complex * B, unsigned int N){
+    vector<complex> output(N,complex());
+    for(int x = 0; x < N; x++){
+        output[x] = A[x] * (B[x].conjugate());
+    }
 }

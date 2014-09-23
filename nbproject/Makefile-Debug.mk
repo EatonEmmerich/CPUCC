@@ -35,9 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Source/DoubleVector.o \
+	${OBJECTDIR}/Source/NOR.o \
 	${OBJECTDIR}/Source/PolyphaseFilter.o \
-	${OBJECTDIR}/Source/SingleVector.o \
 	${OBJECTDIR}/Source/complex.o \
 	${OBJECTDIR}/Source/fft.o \
 	${OBJECTDIR}/Source/main.o
@@ -47,17 +46,15 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
-	${TESTDIR}/TestFiles/f4 \
 	${TESTDIR}/TestFiles/f2 \
-	${TESTDIR}/TestFiles/f3 \
-	${TESTDIR}/TestFiles/f1
+	${TESTDIR}/TestFiles/f3
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=`cppunit-config --cflags` 
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=`cppunit-config --cflags` 
+CXXFLAGS=`cppunit-config --cflags` 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -66,30 +63,25 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lpthread
+LDLIBSOPTIONS=-lpthread `cppunit-config --libs` `cppunit-config --libs` `cppunit-config --libs`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${TESTDIR}/TestFiles/f4
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc: ${OBJECTFILES}
-	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc ${OBJECTFILES} ${LDLIBSOPTIONS}
+${TESTDIR}/TestFiles/f4: ${OBJECTFILES}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f4 ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/Source/DoubleVector.o: Source/DoubleVector.cpp 
+${OBJECTDIR}/Source/NOR.o: Source/NOR.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/DoubleVector.o Source/DoubleVector.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/NOR.o Source/NOR.cpp
 
 ${OBJECTDIR}/Source/PolyphaseFilter.o: Source/PolyphaseFilter.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/PolyphaseFilter.o Source/PolyphaseFilter.cpp
-
-${OBJECTDIR}/Source/SingleVector.o: Source/SingleVector.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Source
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/SingleVector.o Source/SingleVector.cpp
 
 ${OBJECTDIR}/Source/complex.o: Source/complex.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
@@ -111,10 +103,6 @@ ${OBJECTDIR}/Source/main.o: Source/main.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
-${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/DoubleVectTest.o ${TESTDIR}/tests/RunDoubleTest.o ${OBJECTFILES:%.o=%_nomain.o}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc}   -o ${TESTDIR}/TestFiles/f4 $^ ${LDLIBSOPTIONS} `cppunit-config --libs`   
-
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunMainTest.o ${TESTDIR}/tests/mainclasstest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} `cppunit-config --libs` `cppunit-config --libs`   
@@ -122,22 +110,6 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunMainTest.o ${TESTDIR}/tests/maincla
 ${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/RunPolyTest.o ${TESTDIR}/tests/polyphasetest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} `cppunit-config --libs`   
-
-${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/RuntSingleVector.o ${TESTDIR}/tests/testSingleVector.o ${OBJECTFILES:%.o=%_nomain.o}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} `cppunit-config --libs` `cppunit-config --libs`   
-
-
-${TESTDIR}/tests/DoubleVectTest.o: tests/DoubleVectTest.cpp 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} "$@.d"
-	$(COMPILE.cc) -g `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/DoubleVectTest.o tests/DoubleVectTest.cpp
-
-
-${TESTDIR}/tests/RunDoubleTest.o: tests/RunDoubleTest.cpp 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} "$@.d"
-	$(COMPILE.cc) -g `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/RunDoubleTest.o tests/RunDoubleTest.cpp
 
 
 ${TESTDIR}/tests/RunMainTest.o: tests/RunMainTest.cpp 
@@ -164,29 +136,17 @@ ${TESTDIR}/tests/polyphasetest.o: tests/polyphasetest.cpp
 	$(COMPILE.cc) -g -I. `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/polyphasetest.o tests/polyphasetest.cpp
 
 
-${TESTDIR}/tests/RuntSingleVector.o: tests/RuntSingleVector.cpp 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} "$@.d"
-	$(COMPILE.cc) -g `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/RuntSingleVector.o tests/RuntSingleVector.cpp
-
-
-${TESTDIR}/tests/testSingleVector.o: tests/testSingleVector.cpp 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} "$@.d"
-	$(COMPILE.cc) -g `cppunit-config --cflags` -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/testSingleVector.o tests/testSingleVector.cpp
-
-
-${OBJECTDIR}/Source/DoubleVector_nomain.o: ${OBJECTDIR}/Source/DoubleVector.o Source/DoubleVector.cpp 
+${OBJECTDIR}/Source/NOR_nomain.o: ${OBJECTDIR}/Source/NOR.o Source/NOR.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/Source/DoubleVector.o`; \
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Source/NOR.o`; \
 	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/DoubleVector_nomain.o Source/DoubleVector.cpp;\
+	    $(COMPILE.cc) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/NOR_nomain.o Source/NOR.cpp;\
 	else  \
-	    ${CP} ${OBJECTDIR}/Source/DoubleVector.o ${OBJECTDIR}/Source/DoubleVector_nomain.o;\
+	    ${CP} ${OBJECTDIR}/Source/NOR.o ${OBJECTDIR}/Source/NOR_nomain.o;\
 	fi
 
 ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o: ${OBJECTDIR}/Source/PolyphaseFilter.o Source/PolyphaseFilter.cpp 
@@ -200,19 +160,6 @@ ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o: ${OBJECTDIR}/Source/PolyphaseFilte
 	    $(COMPILE.cc) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o Source/PolyphaseFilter.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/Source/PolyphaseFilter.o ${OBJECTDIR}/Source/PolyphaseFilter_nomain.o;\
-	fi
-
-${OBJECTDIR}/Source/SingleVector_nomain.o: ${OBJECTDIR}/Source/SingleVector.o Source/SingleVector.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Source
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/Source/SingleVector.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -g -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Source/SingleVector_nomain.o Source/SingleVector.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/Source/SingleVector.o ${OBJECTDIR}/Source/SingleVector_nomain.o;\
 	fi
 
 ${OBJECTDIR}/Source/complex_nomain.o: ${OBJECTDIR}/Source/complex.o Source/complex.cpp 
@@ -258,10 +205,8 @@ ${OBJECTDIR}/Source/main_nomain.o: ${OBJECTDIR}/Source/main.o Source/main.cpp
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
-	    ${TESTDIR}/TestFiles/f4 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
-	    ${TESTDIR}/TestFiles/f1 || true; \
 	else  \
 	    ./${TEST} || true; \
 	fi
@@ -269,7 +214,7 @@ ${OBJECTDIR}/Source/main_nomain.o: ${OBJECTDIR}/Source/main.o Source/main.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc
+	${RM} ${TESTDIR}/TestFiles/f4
 
 # Subprojects
 .clean-subprojects:

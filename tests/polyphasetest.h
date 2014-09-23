@@ -10,11 +10,13 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "../Source/PolyphaseFilter.h"
+#include <pthread.h>
 class polyphasetest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE(polyphasetest);
 
 	CPPUNIT_TEST(testprefilter);
-	CPPUNIT_TEST(testFailedMethod);
+	CPPUNIT_TEST(testPffTest);
+	CPPUNIT_TEST(testPolyThread);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -26,7 +28,8 @@ public:
 
 private:
 	void testprefilter();
-	void testFailedMethod();
+	void testPffTest();
+	void testPolyThread();
 };
 
 #endif	/* POLYPHASETEST_H */

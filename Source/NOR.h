@@ -17,6 +17,9 @@
 #include <fstream>
 #include <locale>
 #include <functional>
+#include <cassert>
+#include "complex.h"
+#include <math.h>
 
 
 class NotSameLengthException : public std::exception
@@ -43,9 +46,7 @@ std::string NumberToString(const T in) {
     return result;
 }
 
-#include "complex.h"
-#include "SingleVector.h"
-#include "DoubleVector.h"
-
+void copy_(std::vector<complex>& out,std::vector<double>& in);
+void copy_(std::vector<std::vector<complex> >& out,std::vector<std::vector<double> >& in);
 #endif	/* NOR_H */
 

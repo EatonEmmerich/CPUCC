@@ -4,10 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>Source/DoubleVector.h</itemPath>
       <itemPath>Source/NOR.h</itemPath>
       <itemPath>Source/PolyphaseFilter.h</itemPath>
-      <itemPath>Source/SingleVector.h</itemPath>
       <itemPath>Source/complex.h</itemPath>
       <itemPath>Source/fft.h</itemPath>
       <itemPath>Source/main.h</itemPath>
@@ -20,9 +18,8 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>Source/DoubleVector.cpp</itemPath>
+      <itemPath>Source/NOR.cpp</itemPath>
       <itemPath>Source/PolyphaseFilter.cpp</itemPath>
-      <itemPath>Source/SingleVector.cpp</itemPath>
       <itemPath>Source/complex.cpp</itemPath>
       <itemPath>Source/fft.cpp</itemPath>
       <itemPath>Source/main.cpp</itemPath>
@@ -31,14 +28,6 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
-      <logicalFolder name="f4"
-                     displayName="DoubleVectorTest"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>tests/DoubleVectTest.cpp</itemPath>
-        <itemPath>tests/DoubleVectTest.h</itemPath>
-        <itemPath>tests/RunDoubleTest.cpp</itemPath>
-      </logicalFolder>
       <logicalFolder name="f2" displayName="MainTest" projectFiles="true" kind="TEST">
         <itemPath>tests/RunMainTest.cpp</itemPath>
         <itemPath>tests/mainclasstest.cpp</itemPath>
@@ -51,14 +40,6 @@
         <itemPath>tests/RunPolyTest.cpp</itemPath>
         <itemPath>tests/polyphasetest.cpp</itemPath>
         <itemPath>tests/polyphasetest.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f1"
-                     displayName="Single Vector test"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>tests/RuntSingleVector.cpp</itemPath>
-        <itemPath>tests/testSingleVector.cpp</itemPath>
-        <itemPath>tests/testSingleVector.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -85,19 +66,13 @@
       </compileType>
       <item path="Resources/ReadMe.txt" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Source/DoubleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/DoubleVector.h" ex="false" tool="3" flavor2="0">
+      <item path="Source/NOR.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Source/NOR.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/PolyphaseFilter.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Source/PolyphaseFilter.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/SingleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/SingleVector.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/complex.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -175,17 +150,9 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
-      <item path="tests/DoubleVectTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/DoubleVectTest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tests/RunDoubleTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="tests/RunMainTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RunPolyTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/RuntSingleVector.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/mainclasstest.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -194,10 +161,6 @@
       <item path="tests/polyphasetest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/polyphasetest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tests/testSingleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/testSingleVector.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -222,19 +185,13 @@
       </compileType>
       <item path="Resources/ReadMe.txt" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Source/DoubleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/DoubleVector.h" ex="false" tool="3" flavor2="0">
+      <item path="Source/NOR.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Source/NOR.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/PolyphaseFilter.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Source/PolyphaseFilter.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/SingleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/SingleVector.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Source/complex.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -312,17 +269,9 @@
           </linkerLibItems>
         </linkerTool>
       </folder>
-      <item path="tests/DoubleVectTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/DoubleVectTest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tests/RunDoubleTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="tests/RunMainTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/RunPolyTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/RuntSingleVector.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/mainclasstest.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -331,10 +280,6 @@
       <item path="tests/polyphasetest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/polyphasetest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tests/testSingleVector.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/testSingleVector.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

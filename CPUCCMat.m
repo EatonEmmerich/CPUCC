@@ -51,7 +51,7 @@ xlabel('f_s');
 ylabel('angle');
 print(2,'input freq.svg','-dsvg');
 %windowcoef = (Nfft)/f; % commonly used constant
-Signal_no_noise_s = csvread('Inputtwodim');
+Signal_no_noise_s = csvread('inputtest.csv');
 Signal_no_noise_s = Signal_no_noise_s(:,1:N);
 Signalf = zeros(Num_Of_Windows_Per_Signal,Window_Size);
 Signalfft = zeros(Number_Of_Signals,Nfft/2);

@@ -24,22 +24,26 @@ void mainclasstest::tearDown() {
 }
 
 void mainclasstest::testRead_data() {
-    DoubleVector * b =  Read_data("Resources/test.csv");
-    DoubleVector a = *b;
+    vector<vector<double> > b;
+    Read_data(b, "Resources/test.csv");
+    vector<vector<complex> > a;
+    copy_(a,b);
     bool right = true;
-    if(a.getEntry(0,0).re() != 5) right = false;
-    if(a.getEntry(0,1).re() != 20) right = false;
-    if(a.getEntry(0,2).re() != 10.0000095) right = false;
+    if(a[0][0].re() != 5) right = false;
+    if(a[0][1].re() != 20) right = false;
+    if(a[0][2].re() != 10.0000095) right = false;
     CPPUNIT_ASSERT(right);
 }
 
 void mainclasstest::testSave_data() {
-    SingleVector b = SingleVector(5);
-    b.setEntry(0,0);
-    b.setEntry(1,1);
-    b.setEntry(2,2);
-    b.setEntry(5.5,4);
-    Save_data("Resources/test5.csv",b);
+    vector<double> b(5);
+    b[0] = 0;
+    b[1] = 1;
+    b[2] = 2;
+    b[4] = 5.5;
+    vector<complex> a;
+    copy_(a,b);
+    Save_data("Resources/test5.csv",a);
     std::fstream myfile;
     bool right = true;
     std::string line;
@@ -54,17 +58,17 @@ void mainclasstest::testSave_data() {
         
     }
     if (line!=test23) right = false;
-    Save_data("Resources/test5.csv",b);
+    Save_data("Resources/test5.csv",a);
     
     CPPUNIT_ASSERT(right);
 }
 
 void mainclasstest::testSave_dataim() {
-    SingleVector b = SingleVector(5);
-    b.setEntry(0,2,0);
-    b.setEntry(1,2,1);
-    b.setEntry(2,2,2);
-    b.setEntry(5.5,2.2,4);
+    vector<complex> b(5);
+    b[0] = complex (0,2);
+    b[1] = complex(1,2);
+    b[2] = complex(2,2);
+    b[4] = complex(5.5,2.2);
     Save_data("Resources/test57.csv",b);
     std::string filename = "Resources/test57.csv";
     std::fstream myfiles(filename.c_str(),ios::in);
@@ -80,14 +84,19 @@ void mainclasstest::testSave_dataim() {
 }
 
 void mainclasstest::testRead_data2dim() {
-    DoubleVector * b = Read_data("Resources/test.csv");
-    DoubleVector a = * b;
+    vector<vector<double> > b;
+    Read_data(b, "Resources/test.csv");
+    vector<vector<complex> > a;
+    copy_(a,b);
     bool right = true;
-    if(a.getEntry(0,0).re() != 5) right = false;
-    if(a.getEntry(0,1).re() != 20) right = false;
-    if(a.getEntry(0,2).re() != 10.0000095) right = false;
-    if(a.getEntry(1,0).re() != 20) right = false;
-    if(a.getEntry(1,1).re() != 10.095) right = false;
-    if(a.getEntry(1,2).re() != 5) right = false;
+    if(a[0][0].re() != 5) right = false;
+    if(a[0][1].re() != 20) right = false;
+    std::cout << "0,1";
+    if(a[0][2].re() != 10.0000095) right = false;
+    std::cout << "0,2";
+    if(a[1][0].re() != 20) right = false;
+    std::cout << "1,0";
+    if(a[1][1].re() != 10.095) right = false;
+    if(a[1][2].re() != 5) right = false;
     CPPUNIT_ASSERT(right);
 }

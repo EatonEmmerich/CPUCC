@@ -8,24 +8,26 @@
 #ifndef POLYPHASEFILTER_H
 #define	POLYPHASEFILTER_H
 #include "NOR.h"
-#include <math.h>
-#include <pthread.h> 
-SingleVector prefilter_window(unsigned int N,unsigned int M);
-SingleVector ppf(unsigned int N, SingleVector input);
-SingleVector ppf(unsigned int N, SingleVector custom_Window, SingleVector input);
+
+#include <pthread.h>
+using namespace std;
+void prefilter_window(vector<double>& result, unsigned int N,unsigned int M);
+void ppf(vector<double>& output ,unsigned int N, vector<double> input);
+void ppf(vector<double>& result, unsigned int N, vector<double> custom_Window, vector<double> input);
 void * polyphaseThread(void * arg);
 
 struct arg_type{
-	DoubleVector * temp;
-	SingleVector *const custom_Window;
+	vector<double> custom_Window;
 	unsigned int N;
-	SingleVector *const input;
+	vector<double> input;
 	unsigned int start;
 	unsigned int stop;
-	unsigned int x;
-	arg_type(SingleVector* const _custom_Window, SingleVector* const _input): input(_input),custom_Window(_custom_Window){
-	
+	arg_type(vector<double> _custom_Window, vector<double> _input): input(_input), custom_Window(_custom_Window){
 	}
+};
+
+struct thread_return_data{
+	vector<double> result;
 };
 #endif	/* POLYPHASEFILTER_H */
 
