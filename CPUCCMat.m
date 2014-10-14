@@ -1,9 +1,9 @@
 samplingFreq = 2*10^9; % sampling frequency
-Window_Size = 2^15; % size of window to cross multiply
+Window_Size = 2^12; % size of window to cross multiply
 number_of_bodies = 5;
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^8; % radians/sec
-signal_time = 0.0001; % in seconds
+signal_time = 0.00001; % in seconds
 N = signal_time/(1/samplingFreq); % total samples in input signal
 Nsub = mod(N,Window_Size)
 N = N-Nsub
@@ -58,8 +58,8 @@ Signalfft = zeros(Number_Of_Signals,Nfft/2);
 Signalmul = zeros(Number_Of_Complex_Multiplications,Nfft/2);
 Signalout = zeros(1,Nfft/2);
 Signalin = zeros(Number_Of_Signals,N);
-analysis_filter = sinc(((0:N-1)-N/2)/Window_Size);
-HanningWindow = 1/2-(1/2)*cos(2*pi*(0:N-1)/N);
+analysis_filter = sinc(((0:(N-1))-N/2)/Window_Size);
+HanningWindow = 1/2-(1/2)*cos(2*pi*(0:(N-1))/N);
 pre_filter = analysis_filter.*HanningWindow;
 figure(48);
 plot(t(1:N),pre_filter);
@@ -74,7 +74,7 @@ print(48,'polyphasepre.svg','-dsvg');
 % Set up realtime signals
 x2 = 1;
 for x = 1:Num_Of_Antennas
-    %Signal_no_noise_s = zeros(1,N);
+	%Signal_no_noise_s = zeros(1,N);
     %for(z = 1:number_of_bodies)
     %    Signal_no_noise_s = Signal_no_noise_s + noise2(z)*e.^((((2*pi*f(z)*t)+noise1(z)*0.5*pi*(x-1))*i));
     %end
@@ -102,15 +102,17 @@ for x = 1:Num_Of_Antennas
     window_c = Window_Size; % end of the window currently being shifted
     z = 1;
     TEMP = zeros(1,Window_Size);
+
     %DO POLYPHASE
+
     while window_c <= N
         Signalf(z,:) = (Signalt(start:(window_c)));
 %       Signalf(z,:) = Signalt(1:Nfft);
-	pre_part = pre_filter(start:(window_c));
-        % add prefilter
-        Signalf(z,:) = Signalf(z,:).*pre_part;
-	%figure(z+100*x);
-	%plot(angle(fft(Signalt(start:window_c))));
+		pre_part = pre_filter(start:(window_c));
+		% add prefilter
+		Signalf(z,:) = Signalf(z,:).*pre_part;
+		%figure(z+100*x);
+		%plot(angle(fft(Signalt(start:window_c))));
         start = window_c+1;
         window_c = window_c + Window_Size;
         TEMP = TEMP + Signalf(z,:);

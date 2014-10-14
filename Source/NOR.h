@@ -7,7 +7,9 @@
 
 #ifndef NOR_H
 #define	NOR_H
-#define NUM_THREADS 3
+#define NUM_THREADS 4
+typedef long long int64;
+typedef unsigned long long uint64;
 #include <string>
 #include <exception>
 #include <vector>
@@ -20,6 +22,12 @@
 #include <cassert>
 #include "complex.h"
 #include <math.h>
+#ifdef WIN32
+#include <Windows.h>
+#else
+#include <sys/time.h>
+#include <ctime>
+#endif
 
 
 class NotSameLengthException : public std::exception
@@ -48,5 +56,6 @@ std::string NumberToString(const T in) {
 
 void copy_(std::vector<complex>& out,std::vector<double>& in);
 void copy_(std::vector<std::vector<complex> >& out,std::vector<std::vector<double> >& in);
+int64 GetTimeMs64();
 #endif	/* NOR_H */
 

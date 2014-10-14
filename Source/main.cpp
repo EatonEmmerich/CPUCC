@@ -25,14 +25,32 @@ int main(int argc, const char * argv[]) {
     vector<double> prefilter;
     vector<double> pffout1;
     vector<double> pffout2;
-    vector<complex> Output;
+    vector<complex> Output1;
+    vector<complex> Output2;
     vector<complex> fftv1;
     vector<complex> fftv2;
+    int64 t_start;
+    int64 t_total;
+    int64 ppfPref_start;
+    int64 ppfPref_stop;
+    int64 ppf_start;
+    int64 ppf_stop;
+    int64 fft_start;
+    int64 fft_stop;
+    int64 correlate_start;
+    int64 correlate_stop;
+    int64 startcpyinputs;
+    int64 stopcpyinputs;
+    int64 startcpyinputs2 = 0;
+    int64 stopcpyinputs2 = 0;
+    double convtoSec = 1000000;
+
     
     for (int x = 0; x < argc; x++){
         a[x] = argv[x];
     }
     step = parse_arguments(argc, a);
+    t_start = GetTimeMs64();
     //if all is fine. continue to data reading phase.
     if (step == 1) {
         string filename = argv[1];
@@ -43,25 +61,61 @@ int main(int argc, const char * argv[]) {
         return -1;
     }
     M = Data[0].size();
+    ppfPref_start = GetTimeMs64();
     prefilter_window(prefilter,numwindowssize*2,M);
+    ppfPref_stop = GetTimeMs64();
+    ppf_start = GetTimeMs64();
     ppf(pffout1,numwindowssize*2,prefilter,Data[0]);
     ppf(pffout2,numwindowssize*2,prefilter,Data[1]);
+    ppf_stop = GetTimeMs64();
     //convert to complex type.
+    startcpyinputs = GetTimeMs64();
     vector<complex> complexV1;
     copy_(complexV1,pffout1);
     vector<complex> complexV2;
     copy_(complexV2,pffout2);
+    stopcpyinputs = GetTimeMs64();
     //complex type pointers.
     //**create threads for each fft**
     complex * fft1 = &(complexV1[0]);
+    fft_start = GetTimeMs64();
     CFFT::Forward(fft1,(numwindowssize));
     complex * fft2 = &(complexV2[0]);
     CFFT::Forward(fft2,(numwindowssize));
+    fft_stop = GetTimeMs64();
     //multiply
     //**create threads for multiply**
-    Output = FDCorrelate(fft1,fft2,numwindowssize);
+    correlate_start = GetTimeMs64();
+    Output1 = FDCorrelate(fft1,fft2,numwindowssize);
+    Output2 = FDCorrelate(fft2,fft1,numwindowssize);
+    correlate_stop = GetTimeMs64();
+    Save_data("ProgramOutput1.csv",Output1);
+    Save_data("ProgramOutput2.csv",Output2);
+    t_total = GetTimeMs64();
+    //print timing results
+    double timet = 0.00;
+    int64 totalflop = 0.00;
+    timet = ((double)(t_total-t_start)/convtoSec);
+    cout << "\ntotal time to execute:                   " << NumberToString<double>(timet);
+    timet = ((double)(ppfPref_stop-ppfPref_start)/convtoSec);
+    cout << "\ntotal time to calculate prefilter        " << NumberToString<double>(timet);
+    timet = ((double)(ppf_stop-ppf_start)/convtoSec);
+    cout << "\ntotal time to apply Polyphasefilter      " << NumberToString<double>(timet);
+    timet = ((double)(fft_stop-fft_start)/convtoSec);
+    cout << "\ntotal time to apply FFT                  " << NumberToString<double>(timet);
+    timet = ((double)(correlate_stop-correlate_start)/convtoSec);
+    cout << "\ntotal time to apply Correlation Process  " << NumberToString<double>(timet);
+    timet = ((double)(stopcpyinputs-startcpyinputs)/convtoSec);
+    cout << "\ntotal time to copy in                    " << NumberToString<double>(timet);
+    timet = ((double)(stopcpyinputs2-startcpyinputs2)/convtoSec);
+    cout << "\ntotal time to copy out                   " << NumberToString<double>(timet);
+
+    cout << "\ntotal clicks                             " << NumberToString<double>(t_total-t_start);
+    cout << "\nclocks per second                        " << NumberToString<double>(CLOCKS_PER_SEC);
+    cout << "\n";
+
     //done, save output.
-    Save_data("ProgramOutput.csv",Output);
+    
     
     return 0;
 }
