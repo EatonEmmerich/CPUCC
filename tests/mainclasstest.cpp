@@ -100,3 +100,16 @@ void mainclasstest::testRead_data2dim() {
     if(a[1][2].re() != 5) right = false;
     CPPUNIT_ASSERT(right);
 }
+
+void mainclasstest::testCorrelate() {
+    vector<vector<double> > b;
+    Read_data(b, "Resources/test.csv");
+    vector<vector<complex> > a;
+    copy_(a,b);
+    vector<complex> a1 = a[0];
+    vector<complex> a2 = a[1];
+    vector<complex> answr;
+    std::cout << "0.001";
+    answr = FDCorrelate(&(a1[0]),&(a2[0]), 2048);
+    CPPUNIT_ASSERT(true);
+}

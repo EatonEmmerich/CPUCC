@@ -28,7 +28,7 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     int ran = 0;
     
     result.resize(N,0.00);
-    vector<vector<double> > temp(num_thread,vector<double>(N,0));
+    vector<vector<double> > temp(num_thread,vector<double>(N,0.00));
        
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -59,10 +59,13 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
             }
             amountrunning --;
             ran ++;
+            delete(ret);
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
         }
     }
+    //delete thread datastructs
+    delete[](threads);
     //done applying, now sum.
     for(unsigned int x = 0; x < num_thread; x++){
         std::transform(result.begin(),result.end(), temp[x].begin(),result.begin(),std::plus<double>());
@@ -97,6 +100,7 @@ void * polyphaseThread(void * threadarg){
     for(y = 0; y < inputargs->N; y++){
         (answr)->result[y] = par_Window[y]*par_input[y];
     }
+    delete((arg_type *)(threadarg));
     pthread_exit(answr);
     return 0;
 }

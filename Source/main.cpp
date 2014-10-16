@@ -4,7 +4,7 @@ using namespace std;
 #define OPTIONSIZE 8
 #define DEFAULT_THREADS 2
 #define DEFAULT_BITS 16  //This is mere for display, will later on check to see how we can overcome this obstacle..
-#define DEFAULT_WINDOW_SIZE 16
+#define DEFAULT_WINDOW_SIZE 4096
 #define DEFAULT_SIGS 20
 
 const char * options[OPTIONSIZE] = {"/bitdepth", "/bd", "/windowsize", "/ws", "/numsig", "/ns", "/numthreads", "/nt"};
@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]) {
     //check input paramaters set into program.
     string *a = new string [argc];
     int M = 0;
-    int step;
+    int step = 0;
     vector<vector<double> > Data;
     vector<double> prefilter;
     vector<double> pffout1;
@@ -45,9 +45,9 @@ int main(int argc, const char * argv[]) {
     int64 stopcpyinputs2 = 0;
     double convtoSec = 1000000;
 
-    
     for (int x = 0; x < argc; x++){
         a[x] = argv[x];
+        
     }
     step = parse_arguments(argc, a);
     t_start = GetTimeMs64();
@@ -60,11 +60,14 @@ int main(int argc, const char * argv[]) {
     else{
         return -1;
     }
+    
+    cout << "\nnew prefilter";
     M = Data[0].size();
     ppfPref_start = GetTimeMs64();
     prefilter_window(prefilter,numwindowssize*2,M);
     ppfPref_stop = GetTimeMs64();
     ppf_start = GetTimeMs64();
+    cout << "\nPPF";
     ppf(pffout1,numwindowssize*2,prefilter,Data[0]);
     ppf(pffout2,numwindowssize*2,prefilter,Data[1]);
     ppf_stop = GetTimeMs64();
@@ -79,12 +82,14 @@ int main(int argc, const char * argv[]) {
     //**create threads for each fft**
     complex * fft1 = &(complexV1[0]);
     fft_start = GetTimeMs64();
+    cout << "\nCFFT";
     CFFT::Forward(fft1,(numwindowssize));
     complex * fft2 = &(complexV2[0]);
     CFFT::Forward(fft2,(numwindowssize));
     fft_stop = GetTimeMs64();
     //multiply
     //**create threads for multiply**
+    cout << "\nCorrelateStart";
     correlate_start = GetTimeMs64();
     Output1 = FDCorrelate(fft1,fft2,numwindowssize);
     Output2 = FDCorrelate(fft2,fft1,numwindowssize);
@@ -154,13 +159,16 @@ int parse_arguments(int argc, std::string argv[]) {
             }
             throw "No option handler exception";
         }
+        return 1;
     } else {
         if (argc == 1) {
             print_readme();
             return 0;
         }
+        cout<< NumberToString<int>(argc);
     }
     return 1;
+    
 }
 
 void print_parse_error(std::string err) {
@@ -313,4 +321,5 @@ vector<complex> FDCorrelate(complex * A,complex * B, unsigned int N){
     for(int x = 0; x < N; x++){
         output[x] = A[x] * (B[x].conjugate());
     }
+    return output;
 }

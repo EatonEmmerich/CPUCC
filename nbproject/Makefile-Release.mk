@@ -63,15 +63,15 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`cppunit-config --libs` `cppunit-config --libs` `cppunit-config --libs`  
+LDLIBSOPTIONS=`cppunit-config --libs` `cppunit-config --libs` `cppunit-config --libs` -lpthread   
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${TESTDIR}/TestFiles/f4
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc
 
-${TESTDIR}/TestFiles/f4: ${OBJECTFILES}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc} -o ${TESTDIR}/TestFiles/f4 ${OBJECTFILES} ${LDLIBSOPTIONS}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/Source/NOR.o: Source/NOR.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Source
@@ -214,7 +214,7 @@ ${OBJECTDIR}/Source/main_nomain.o: ${OBJECTDIR}/Source/main.o Source/main.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${TESTDIR}/TestFiles/f4
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cpucc
 
 # Subprojects
 .clean-subprojects:

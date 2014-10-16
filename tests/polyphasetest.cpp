@@ -73,7 +73,7 @@ void polyphasetest::testPffTest() {
     vector<double> input = b1[0];
     //Save_data("Resources/inputvalid.csv",input);
     vector<double> answr;
-    ppf(answr,1024,input);
+    ppf(answr,4096,input);
     copy_(b,answr);
     Save_data("Resources/answr1.csv",b);
     CPPUNIT_ASSERT(true);

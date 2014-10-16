@@ -58,9 +58,19 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
         <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
           <linkerLibItems>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -86,21 +96,6 @@
       </item>
       <item path="Source/main.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f1">
-        <cTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </cTool>
-        <ccTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f1</output>
-          <linkerLibItems>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
       <folder path="TestFiles/f2">
         <cTool>
           <commandLine>`cppunit-config --cflags`</commandLine>
@@ -131,20 +126,6 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f3</output>
-          <linkerLibItems>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f4">
-        <cTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </cTool>
-        <ccTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f4</output>
           <linkerLibItems>
             <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
           </linkerLibItems>
@@ -172,9 +153,11 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <commandLine>`cppunit-config --cflags`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <commandLine>`cppunit-config --cflags`</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -182,6 +165,14 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
       <item path="Resources/ReadMe.txt" ex="false" tool="3" flavor2="0">
       </item>
@@ -205,21 +196,6 @@
       </item>
       <item path="Source/main.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f1">
-        <cTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </cTool>
-        <ccTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f1</output>
-          <linkerLibItems>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
       <folder path="TestFiles/f2">
         <cTool>
           <commandLine>`cppunit-config --cflags`</commandLine>
@@ -250,20 +226,6 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f3</output>
-          <linkerLibItems>
-            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f4">
-        <cTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </cTool>
-        <ccTool>
-          <commandLine>`cppunit-config --cflags`</commandLine>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f4</output>
           <linkerLibItems>
             <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
           </linkerLibItems>
