@@ -22,20 +22,30 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     unsigned int num_thread = M/N;
 //    std::cout << "numthread \n" << NumberToString<unsigned int>(num_thread);
     pthread_t * threads = new pthread_t [NUM_THREADS];
-    int currentFrame = 0;
+    //int currentFrame = 0;
     int start = 0;
     int stop = start + N;
     int ran = 0;
+    
+    //setup arguments for threads
+    struct arg_type * inputargsAr[NUM_THREADS];
+    for(int x = 0; x < NUM_THREADS; x++){
+        inputargsAr[x] = new struct arg_type(custom_Window, input);
+        inputargsAr[x]->N = N;
+        
+    }
+    
+    
     //make copies of custom_window in order to increase speed, takes more memory.
-    vector<double> custom_WindowAr [NUM_THREADS];
-    for(int x = 0; x < NUM_THREADS; x ++){
-        custom_WindowAr[x] = custom_Window;
-    }
+//    vector<double> custom_WindowAr [NUM_THREADS];
+//    for(int x = 0; x < NUM_THREADS; x ++){
+//        custom_WindowAr[x] = custom_Window;
+//    }
     //make copies of input in order to increase speed, takes more memory.
-    vector<double> inputAr [NUM_THREADS];
-    for(int x = 0; x < NUM_THREADS; x ++){
-        inputAr[x] = input;
-    }
+//    vector<double> inputAr [NUM_THREADS];
+//    for(int x = 0; x < NUM_THREADS; x ++){
+//        inputAr[x] = input;
+//    }
     
     result.resize(N,0.00);
        
@@ -44,13 +54,18 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     while(amountrun < num_thread){
 
         for(unsigned int x = 0; (x < NUM_THREADS)&&(amountrun<num_thread); x++){
-            struct arg_type * inputargs = new struct arg_type(custom_WindowAr[x], inputAr[x]);
-            inputargs->N = N;
-            inputargs->start = start;
-            inputargs->stop = stop;
+//            struct arg_type * inputargs = new struct arg_type(custom_Window, input);
+//            inputargs->N = N;
+//            inputargs->start = start;
+//            inputargs->stop = stop;
+//            start = stop;
+//            stop = start + N;
+            inputargsAr[x]->start = start;
+            inputargsAr[x]->stop = stop;
             start = stop;
             stop = start + N;
-            int rc = pthread_create(&threads[x],NULL,polyphaseThread,(void *) inputargs);
+            
+            int rc = pthread_create(&threads[x],NULL,polyphaseThread,(void *) inputargsAr[x]);
             if(rc){
                 std::cout << "could not create thread " << rc;
             }
@@ -109,7 +124,6 @@ void * polyphaseThread(void * threadarg){
     for(y = 0; y < inputargs->N; y++){
         (answr)->result[y] = ((par_Window[y]))*par_input[y];
     }
-    delete((arg_type *)(threadarg));
     pthread_exit(answr);
     return 0;
 }
