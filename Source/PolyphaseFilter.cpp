@@ -26,16 +26,25 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     int start = 0;
     int stop = start + N;
     int ran = 0;
+    //make copies of custom_window in order to increase speed, takes more memory.
+    vector<double> custom_WindowAr [NUM_THREADS];
+    for(int x = 0; x < NUM_THREADS; x ++){
+        custom_WindowAr[x] = custom_Window;
+    }
+    //make copies of input in order to increase speed, takes more memory.
+    vector<double> inputAr [NUM_THREADS];
+    for(int x = 0; x < NUM_THREADS; x ++){
+        inputAr[x] = input;
+    }
     
     result.resize(N,0.00);
-    vector<vector<double> > temp(num_thread,vector<double>(N,0.00));
        
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
     while(amountrun < num_thread){
 
         for(unsigned int x = 0; (x < NUM_THREADS)&&(amountrun<num_thread); x++){
-            struct arg_type * inputargs = new struct arg_type(custom_Window, input);
+            struct arg_type * inputargs = new struct arg_type(custom_WindowAr[x], inputAr[x]);
             inputargs->N = N;
             inputargs->start = start;
             inputargs->stop = stop;
@@ -52,11 +61,11 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
             pthread_attr_destroy(&attr);
             thread_return_data * ret;
             int rc = pthread_join(threads[x], (void**)&(ret));
-            temp[ran] = ret->result;
             if (rc) {
                 cout << "Error:unable to join," << rc << endl;
                 exit(-1);
             }
+            std::transform(result.begin(),result.end(), ret->result.begin(),result.begin(),std::plus<double>());
             amountrunning --;
             ran ++;
             delete(ret);
@@ -67,9 +76,9 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     //delete thread datastructs
     delete[](threads);
     //done applying, now sum.
-    for(unsigned int x = 0; x < num_thread; x++){
-        std::transform(result.begin(),result.end(), temp[x].begin(),result.begin(),std::plus<double>());
-    }
+//    for(unsigned int x = 0; x < num_thread; x++){
+//        std::transform(result.begin(),result.end(), temp[x].begin(),result.begin(),std::plus<double>());
+//    }
 }
 
 void * polyphaseThread(void * threadarg){
@@ -84,7 +93,7 @@ void * polyphaseThread(void * threadarg){
 //        inputargs->N;
 //        inputargs->start;
 //        inputargs->stop;
-    if(inputargs->stop >= inputargs->input.size()){
+    if(inputargs->stop >= inputargs->inputsize){
         std::cout << "not multiple of each other";
         exit (-1);
     }
@@ -93,12 +102,12 @@ void * polyphaseThread(void * threadarg){
     //std::cout << "sizes: " << NumberToString<unsigned int>(inputargs->N)<< " " << NumberToString<unsigned int>(inputargs->stop-inputargs->start);
     int y = 0;
     for(int x = inputargs->start; x < inputargs->stop; x++){
-        par_Window[y] = inputargs->custom_Window[x];
-        par_input[y] = inputargs->input[x];
+        par_Window[y] = (inputargs->custom_Window)[0][x];
+        par_input[y] = inputargs->input[0][x];
         y++;
     }
     for(y = 0; y < inputargs->N; y++){
-        (answr)->result[y] = par_Window[y]*par_input[y];
+        (answr)->result[y] = ((par_Window[y]))*par_input[y];
     }
     delete((arg_type *)(threadarg));
     pthread_exit(answr);

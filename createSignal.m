@@ -1,6 +1,6 @@
 %ts = 0.000001;
 %N = ts/(tf); % total samples in input signal
-Plength = 512; %length of the amount of data being read of 4096 samples.
+Plength = 64; %length of the amount of data being read of 4096 samples.
 N = 4096*Plength
 answr = zeros(2,N);
 freq_res = 1000;

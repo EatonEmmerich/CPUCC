@@ -17,12 +17,13 @@ void ppf(vector<double>& result, unsigned int N, vector<double> custom_Window, v
 void * polyphaseThread(void * arg);
 
 struct arg_type{
-	vector<double> custom_Window;
+	vector<double> * custom_Window;
 	unsigned int N;
-	vector<double> input;
+	vector<double> * input;
 	unsigned int start;
 	unsigned int stop;
-	arg_type(vector<double> _custom_Window, vector<double> _input): input(_input), custom_Window(_custom_Window){
+	unsigned int inputsize;
+	arg_type(vector<double> _custom_Window, vector<double> _input): input(& _input), custom_Window(& _custom_Window), inputsize(_custom_Window.size()){
 	}
 };
 

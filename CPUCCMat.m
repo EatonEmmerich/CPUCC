@@ -3,7 +3,7 @@ Window_Size = 2^11; % size of window to cross multiply
 %number_of_bodies = 5;
 Num_Of_Antennas = 2;
 signal_frequency = 40*10^8; % radians/sec
-signal_time = 0.00002; % in seconds
+signal_time = 0.0001; % in seconds
 N = signal_time/(1/samplingFreq); % total samples in input signal
 Nsub = mod(N,Window_Size)
 N = N-Nsub
@@ -12,7 +12,7 @@ Num_Of_Windows_Per_Signal = N/Window_Size;
 P = Num_Of_Windows_Per_Signal
 Number_Of_Signals = Num_Of_Antennas
 Number_Of_Complex_Multiplications = 1/2*(Number_Of_Signals-1)*Number_Of_Signals
-signal_to_noise_input = 0.1; % multiplied to noise then added to signal
+signal_to_noise_input = 1; % multiplied to noise then added to signal
 Nyquist_freq = samplingFreq/2;
 t = linspace(0,signal_time,N);
 f = linspace(0,Nyquist_freq,5);
@@ -36,7 +36,7 @@ set(1,'paperorientation','portrait')
 set(1,'papersize',[H,W]);
 subplot(1,2,2);
 plot(t(1:Nfft),angle(Signal_no_noise(1:Nfft)));
-saveas(1,'input time.eps','eps');
+saveas(1,'inputsignaltime.svg','svg');
 figure(2);
 title('Input signal frequency domain','fontsize',14);
 subplot(1,2,1);
@@ -162,7 +162,7 @@ y = 0;
 for x = 1:Num_Of_Antennas
 	figure(x+2+Num_Of_Antennas);
 	subplot(1,2,1);
-	plot(20*log(abs(Signalfft(x,1:Nfft/2))));
+	plot(fs,20*log(abs(Signalfft(x,1:Nfft/2))));
 	title('after polyphase filter','fontsize',14);
 	xlabel('f_s','fontsize',14);
 	ylabel('dB','fontsize',14);
@@ -235,7 +235,7 @@ ttta = angle(fft(Signal_no_noise_s(1,:)).*conj(fft(Signal_no_noise_s(2,:))));
 %size15 = abs(Signalout(100))
 %angle15 = angle(Signalout(100))
 %angle15 = ttfa(100)
-plot(ttta);
+plot(linspace(0,1,N/2),ttta(1:N/2));
 title('actual angles N = whole signal');
 xlabel('f_s');
 hold on;

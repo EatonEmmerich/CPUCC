@@ -2,7 +2,7 @@
 using namespace std;
 
 #define OPTIONSIZE 8
-#define DEFAULT_THREADS 2
+#define DEFAULT_THREADS 4
 #define DEFAULT_BITS 16  //This is mere for display, will later on check to see how we can overcome this obstacle..
 #define DEFAULT_WINDOW_SIZE 4096
 #define DEFAULT_SIGS 20
@@ -14,58 +14,34 @@ int numthreads = DEFAULT_THREADS;
 int numbits = DEFAULT_BITS;
 int numwindowssize = DEFAULT_WINDOW_SIZE;
 int numsignals = DEFAULT_SIGS;
+double convtoSec = 1000000;
 
-int main(int argc, const char * argv[]) {
+//timing variables
+int64 t_start;
+int64 t_total;
+double totaltime = 0;
+int64 ppf_start;
+int64 ppf_stop;
+double totalppf = 0;
+int64 fft_start;
+int64 fft_stop;
+double totalfft = 0;
+int64 correlate_start;
+int64 correlate_stop;
+double totalcorrelate = 0;
+int64 startcpyinputs;
+int64 stopcpyinputs;
+double totalcpy = 0;
+int64 startcpyinputs2 = 0;
+int64 stopcpyinputs2 = 0;
 
-    //check input paramaters set into program.
-    string *a = new string [argc];
-    int M = 0;
-    int step = 0;
-    vector<vector<double> > Data;
-    vector<double> prefilter;
+
+void executeCrossCorrelation(vector<double> prefilter,vector<vector<double> > Data){
     vector<double> pffout1;
     vector<double> pffout2;
     vector<complex> Output1;
     vector<complex> Output2;
-    vector<complex> fftv1;
-    vector<complex> fftv2;
-    int64 t_start;
-    int64 t_total;
-    int64 ppfPref_start;
-    int64 ppfPref_stop;
-    int64 ppf_start;
-    int64 ppf_stop;
-    int64 fft_start;
-    int64 fft_stop;
-    int64 correlate_start;
-    int64 correlate_stop;
-    int64 startcpyinputs;
-    int64 stopcpyinputs;
-    int64 startcpyinputs2 = 0;
-    int64 stopcpyinputs2 = 0;
-    double convtoSec = 1000000;
-
-    for (int x = 0; x < argc; x++){
-        a[x] = argv[x];
         
-    }
-    step = parse_arguments(argc, a);
-    t_start = GetTimeMs64();
-    //if all is fine. continue to data reading phase.
-    if (step == 1) {
-        string filename = argv[1];
-        
-        Read_data(Data, filename);
-    }
-    else{
-        return -1;
-    }
-    
-    cout << "\nnew prefilter";
-    M = Data[0].size();
-    ppfPref_start = GetTimeMs64();
-    prefilter_window(prefilter,numwindowssize*2,M);
-    ppfPref_stop = GetTimeMs64();
     ppf_start = GetTimeMs64();
     cout << "\nPPF";
     ppf(pffout1,numwindowssize*2,prefilter,Data[0]);
@@ -97,23 +73,85 @@ int main(int argc, const char * argv[]) {
     Save_data("ProgramOutput1.csv",Output1);
     Save_data("ProgramOutput2.csv",Output2);
     t_total = GetTimeMs64();
+    
+    //Determine timing total
+    totaltime += ((double)(t_total-t_start)/convtoSec);
+    totalppf += ((double)(ppf_stop-ppf_start)/convtoSec);
+    totalfft += ((double)(fft_stop-fft_start)/convtoSec);
+    totalcorrelate += ((double)(correlate_stop-correlate_start)/convtoSec);
+    totalcpy += ((double)(stopcpyinputs-startcpyinputs)/convtoSec);
+}
+
+int main(int argc, const char * argv[]) {
+
+    //check input paramaters set into program.
+    string *a = new string [argc];
+    int M = 0;
+    int step = 0;
+    vector<vector<double> > Data;
+    vector<double> prefilter;
+    int64 ppfPref_start;
+    int64 ppfPref_stop;
+    
+    
+    for (int x = 0; x < argc; x++){
+        a[x] = argv[x];
+        
+    }
+    step = parse_arguments(argc, a);
+    t_start = GetTimeMs64();
+    //if all is fine. continue to data reading phase.
+    if (step == 1) {
+        string filename = argv[1];
+        
+        Read_data(Data, filename);
+    }
+    else{
+        return -1;
+    }
+    
+    
+    cout << "\nnew prefilter";
+    M = Data[0].size();
+    ppfPref_start = GetTimeMs64();
+    prefilter_window(prefilter,numwindowssize*2,M);
+    ppfPref_stop = GetTimeMs64();
+    
+    //get instructions into cache:
+    for(int x = 0; x < 5; x++){
+        executeCrossCorrelation(prefilter,Data);
+    }
+    
+    //Avg after 100 runs.
+    totaltime = 0;
+    totalppf = 0;
+    totalfft = 0;
+    totalcorrelate = 0;
+    totalcpy = 0;
+    int numit = 100;
+    for(int x = 0; x < numit; x++){
+        executeCrossCorrelation(prefilter,Data);
+    }
+    totaltime = totaltime/numit;
+    totalppf = totalppf/numit;
+    totalfft = totalfft/numit;
+    totalcorrelate = totalcorrelate/numit;
+    totalcpy = totalcpy/numit;
     //print timing results
-    double timet = 0.00;
     int64 totalflop = 0.00;
-    timet = ((double)(t_total-t_start)/convtoSec);
-    cout << "\ntotal time to execute:                   " << NumberToString<double>(timet);
-    timet = ((double)(ppfPref_stop-ppfPref_start)/convtoSec);
+    cout << "\ntotal time to execute:                   " << NumberToString<double>(totaltime);
+    double timet = ((double)(ppfPref_stop-ppfPref_start)/convtoSec);
     cout << "\ntotal time to calculate prefilter        " << NumberToString<double>(timet);
-    timet = ((double)(ppf_stop-ppf_start)/convtoSec);
-    cout << "\ntotal time to apply Polyphasefilter      " << NumberToString<double>(timet);
-    timet = ((double)(fft_stop-fft_start)/convtoSec);
-    cout << "\ntotal time to apply FFT                  " << NumberToString<double>(timet);
-    timet = ((double)(correlate_stop-correlate_start)/convtoSec);
-    cout << "\ntotal time to apply Correlation Process  " << NumberToString<double>(timet);
-    timet = ((double)(stopcpyinputs-startcpyinputs)/convtoSec);
-    cout << "\ntotal time to copy in                    " << NumberToString<double>(timet);
-    timet = ((double)(stopcpyinputs2-startcpyinputs2)/convtoSec);
-    cout << "\ntotal time to copy out                   " << NumberToString<double>(timet);
+    
+    cout << "\ntotal time to apply Polyphasefilter      " << NumberToString<double>(totalppf);
+    
+    cout << "\ntotal time to apply FFT                  " << NumberToString<double>(totalfft);
+    
+    cout << "\ntotal time to apply Correlation Process  " << NumberToString<double>(totalcorrelate);
+    
+    cout << "\ntotal time to copy in                    " << NumberToString<double>(totalcpy);
+//    timet = ((double)(stopcpyinputs2-startcpyinputs2)/convtoSec);
+//    cout << "\ntotal time to copy out                   " << NumberToString<double>(timet);
 
     cout << "\ntotal clicks                             " << NumberToString<double>(t_total-t_start);
     cout << "\nclocks per second                        " << NumberToString<double>(CLOCKS_PER_SEC);
