@@ -32,7 +32,7 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
     for(int x = 0; x < NUM_THREADS; x++){
         inputargsAr[x] = new struct arg_type(custom_Window, input);
         inputargsAr[x]->N = N;
-        
+        inputargsAr[x]->running = false;
     }
     
     
@@ -60,32 +60,44 @@ void ppf(vector<double>& result,unsigned int N,vector<double> custom_Window, vec
 //            inputargs->stop = stop;
 //            start = stop;
 //            stop = start + N;
-            inputargsAr[x]->start = start;
-            inputargsAr[x]->stop = stop;
-            start = stop;
-            stop = start + N;
-            
-            int rc = pthread_create(&threads[x],NULL,polyphaseThread,(void *) inputargsAr[x]);
-            if(rc){
-                std::cout << "could not create thread " << rc;
+            if(!inputargsAr[x]->running){
+                inputargsAr[x]->start = start;
+                inputargsAr[x]->stop = stop;
+                inputargsAr[x]->running = true;
+                start = stop;
+                stop = start + N;
+
+                int rc = pthread_create(&threads[x],NULL,polyphaseThread,(void *) inputargsAr[x]);
+                if(rc){
+                    std::cout << "could not create thread " << rc;
+                }
+//                else{
+//                    std::cout << "thread created";
+//                }
+                amountrunning ++;
+                amountrun ++;
             }
-            amountrunning ++;
-            amountrun ++;
-        }
-        for(unsigned int x = 0; x < amountrunning; x++){
-            pthread_attr_destroy(&attr);
-            thread_return_data * ret;
-            int rc = pthread_join(threads[x], (void**)&(ret));
-            if (rc) {
-                cout << "Error:unable to join," << rc << endl;
-                exit(-1);
+        
+            if(inputargsAr[x]->running){
+                pthread_attr_destroy(&attr);
+                thread_return_data * ret;
+                int rc = pthread_join(threads[x], (void**)&(ret));
+                if (rc) {
+                    cout << "Error:unable to join," << rc <<endl;
+                    cout << "\n on thread nr" << x;
+                    exit(-1);
+                    //<< another thread wants to join
+    //                pthread_attr_init(&attr);
+    //                pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    //                continue;
+                }
+                std::transform(result.begin(),result.end(), ret->result.begin(),result.begin(),std::plus<double>());
+                amountrunning --;
+                ran ++;
+                delete(ret);
+                pthread_attr_init(&attr);
+                pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
             }
-            std::transform(result.begin(),result.end(), ret->result.begin(),result.begin(),std::plus<double>());
-            amountrunning --;
-            ran ++;
-            delete(ret);
-            pthread_attr_init(&attr);
-            pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
         }
     }
     //delete thread datastructs
@@ -124,6 +136,7 @@ void * polyphaseThread(void * threadarg){
     for(y = 0; y < inputargs->N; y++){
         (answr)->result[y] = ((par_Window[y]))*par_input[y];
     }
+    inputargs->running = false;
     pthread_exit(answr);
     return 0;
 }

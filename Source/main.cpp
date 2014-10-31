@@ -2,9 +2,9 @@
 using namespace std;
 
 #define OPTIONSIZE 8
-#define DEFAULT_THREADS 4
+#define DEFAULT_THREADS 8
 #define DEFAULT_BITS 16  //This is mere for display, will later on check to see how we can overcome this obstacle..
-#define DEFAULT_WINDOW_SIZE 4096
+#define DEFAULT_WINDOW_SIZE 4096*2
 #define DEFAULT_SIGS 20
 
 const char * options[OPTIONSIZE] = {"/bitdepth", "/bd", "/windowsize", "/ws", "/numsig", "/ns", "/numthreads", "/nt"};
@@ -35,15 +35,25 @@ double totalcpy = 0;
 int64 startcpyinputs2 = 0;
 int64 stopcpyinputs2 = 0;
 
+void changevalues(vector<vector<double> > & Data){
+    double scale = 1.01;
+    for(int x = 0; x < Data[0].size();x++){
+        Data[0][x] = (Data[0][x])*scale;
+    }
+    for(int x = 0; x < Data[1].size();x++){
+        Data[1][x] = (Data[1][x])*scale;
+    }
+}
+
 
 void executeCrossCorrelation(vector<double> prefilter,vector<vector<double> > Data){
-    vector<double> pffout1;
-    vector<double> pffout2;
-    vector<complex> Output1;
-    vector<complex> Output2;
-        
+    vector<double> pffout1(numwindowssize*2,0.00);
+    vector<double> pffout2(numwindowssize*2,0.00);
+    vector<complex> Output1(numwindowssize);
+    vector<complex> Output2(numwindowssize);
+//    cout << "initilizeing 129" ;
     ppf_start = GetTimeMs64();
-    cout << "\nPPF";
+//    cout << "\nPPF";
     ppf(pffout1,numwindowssize*2,prefilter,Data[0]);
     ppf(pffout2,numwindowssize*2,prefilter,Data[1]);
     ppf_stop = GetTimeMs64();
@@ -58,14 +68,14 @@ void executeCrossCorrelation(vector<double> prefilter,vector<vector<double> > Da
     //**create threads for each fft**
     complex * fft1 = &(complexV1[0]);
     fft_start = GetTimeMs64();
-    cout << "\nCFFT";
+//    cout << "\nCFFT";
     CFFT::Forward(fft1,(numwindowssize));
     complex * fft2 = &(complexV2[0]);
     CFFT::Forward(fft2,(numwindowssize));
     fft_stop = GetTimeMs64();
     //multiply
     //**create threads for multiply**
-    cout << "\nCorrelateStart";
+//    cout << "\nCorrelateStart";
     correlate_start = GetTimeMs64();
     Output1 = FDCorrelate(fft1,fft2,numwindowssize);
     Output2 = FDCorrelate(fft2,fft1,numwindowssize);
@@ -93,7 +103,7 @@ int main(int argc, const char * argv[]) {
     int64 ppfPref_start;
     int64 ppfPref_stop;
     
-    
+    cout << "Program start";
     for (int x = 0; x < argc; x++){
         a[x] = argv[x];
         
@@ -105,6 +115,7 @@ int main(int argc, const char * argv[]) {
         string filename = argv[1];
         
         Read_data(Data, filename);
+        cout << "Where is this 2 coming from?";
     }
     else{
         return -1;
@@ -116,10 +127,13 @@ int main(int argc, const char * argv[]) {
     ppfPref_start = GetTimeMs64();
     prefilter_window(prefilter,numwindowssize*2,M);
     ppfPref_stop = GetTimeMs64();
-    
     //get instructions into cache:
+    int ran = 0;
+    //cout << "prefetch instructions.";
     for(int x = 0; x < 5; x++){
+        cout << "run: " << ran;
         executeCrossCorrelation(prefilter,Data);
+        ran ++;
     }
     
     //Avg after 100 runs.
@@ -130,7 +144,10 @@ int main(int argc, const char * argv[]) {
     totalcpy = 0;
     int numit = 100;
     for(int x = 0; x < numit; x++){
+        cout << "run: " << ran;
+        changevalues(Data);
         executeCrossCorrelation(prefilter,Data);
+        ran ++;
     }
     totaltime = totaltime/numit;
     totalppf = totalppf/numit;
@@ -155,7 +172,8 @@ int main(int argc, const char * argv[]) {
 
     cout << "\ntotal clicks                             " << NumberToString<double>(t_total-t_start);
     cout << "\nclocks per second                        " << NumberToString<double>(CLOCKS_PER_SEC);
-    cout << "\n";
+    cout << "\ntotal M was:                             "<< M <<"\n";
+    
 
     //done, save output.
     

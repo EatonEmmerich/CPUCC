@@ -23,6 +23,10 @@ struct arg_type{
 	unsigned int start;
 	unsigned int stop;
 	unsigned int inputsize;
+	volatile bool running;
+	
+	arg_type(){}
+	
 	arg_type(vector<double> _custom_Window, vector<double> _input): input(& _input), custom_Window(& _custom_Window), inputsize(_custom_Window.size()){
 	}
 };
